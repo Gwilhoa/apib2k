@@ -1,0 +1,32 @@
+import { Body, Controller, Get, Headers, Param, Post, Res } from '@nestjs/common';
+import { secrettoken, ver } from 'src/app.controller';
+import { AchievementService } from './achievement.service';
+
+@Controller (ver+'achievement')
+export class AchievementController {
+	constructor(private readonly achievementService: AchievementService) {}
+
+	@Get()
+	getAll(@Res({ passthrough: true }) response, @Headers() head) {
+		if (head['token'] != secrettoken) {
+			return response.status(401).send('Unauthorized');
+		}
+		return this.achievementService.getAll();
+	}
+
+	@Get('/id/:id')
+	getAchievementById(@Res({ passthrough: true }) response, @Headers() head, @Param() id) {
+		if (head['token'] != secrettoken) {
+			return response.status(401).send('Unauthorized');
+		}
+		return this.achievementService.getAchievementById(id);
+	}
+
+	@Post()
+	createAchievement(@Res({ passthrough: true }) response, @Headers() head, @Body() body) {
+		if (head['token'] != secrettoken) {
+			return response.status(401).send('Unauthorized');
+		}
+		return this.achievementService.createAchievement(body);
+	}
+}
