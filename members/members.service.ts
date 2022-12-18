@@ -107,4 +107,16 @@ export class MembersService {
 		});
 		return member;
 	}
+
+	public async addAchievement(ids, achievement) {
+		const member = await this.membersRepository.findOneBy({
+			id: ids.id
+		});
+		if (member)
+		{
+			member.achievements.push(achievement);
+			await this.membersRepository.save(member);
+		}
+		return member;
+	}
 }

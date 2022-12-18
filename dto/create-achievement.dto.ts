@@ -4,5 +4,4 @@ export class CreateAchievementDTO {
   points: number;
   coins: number;
   title: string;
-  imgurl: string;
 }

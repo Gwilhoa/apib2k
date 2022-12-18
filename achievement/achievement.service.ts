@@ -24,9 +24,17 @@ export class AchievementService {
 		achievement.pointprice = createAchievementRequest.points;
 		achievement.coinsprice = createAchievementRequest.coins;
 		achievement.titleprice = createAchievementRequest.title;
-		achievement.imgurl = createAchievementRequest.imgurl;
 		await this.AchievementRepository.save(achievement);
+		return ;
+	}
 
+	public async removeAchievement(ids){
+		const achievement = await this.AchievementRepository.findOneBy({
+			id: ids.id
+		});
+		if (achievement == null)
+			return ;
+		await this.AchievementRepository.remove(achievement);
 		return ;
 	}
 }

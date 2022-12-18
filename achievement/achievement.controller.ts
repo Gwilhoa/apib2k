@@ -29,4 +29,12 @@ export class AchievementController {
 		}
 		return this.achievementService.createAchievement(body);
 	}
+
+	@Get('/remove/:id')
+	removeAchievement(@Res({ passthrough: true }) response, @Headers() head, @Param() id) {
+		if (head['token'] != secrettoken) {
+			return response.status(401).send('Unauthorized');
+		}
+		return this.achievementService.removeAchievement(id);
+	}
 }
