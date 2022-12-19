@@ -1,5 +1,5 @@
 import { Members } from "src/members/members.entity";
-import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinTable, ManyToMany, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class Achievement {
@@ -13,16 +13,17 @@ export class Achievement {
 	@Column()
 	description: string;
 	
-	@Column({nullable : true})
+	@Column({nullable : false, default: 0})
 	coinsprice: number;
 
-	@Column({nullable : true})
+	@Column({nullable : false, default: 0})
 	pointprice: number;
 
 	@Column({nullable : true})
-	titleprice: string
+	titleprice: string;
 
 	@ManyToMany(type => Members, members => members.achievements)
+	@JoinTable({ name: "members_achievements", joinColumn: { name: "achievement", referencedColumnName: "id" }, inverseJoinColumn: { name: "member", referencedColumnName: "id" }})
 	members: Members[];
 
 }

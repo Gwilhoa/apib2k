@@ -78,4 +78,20 @@ export class MembersController {
 		}
 		return this.membersService.getSquadMembers(id);
 	}
+
+	@Get(ver+'members/achievements/:id')
+	getMemberAchievements(@Res({ passthrough: true }) response, @Headers() head, @Param() id) {
+		if (head['token'] != secrettoken) {
+			return response.status(401).send('Unauthorized');
+		}
+		return this.membersService.getAchievements(id);
+	}
+
+	@Post(ver+'members/achievements/:id')
+	addAchievement(@Res({ passthrough: true }) response, @Headers() head, @Param() id, @Body() body) {
+		if (head['token'] != secrettoken) {
+			return response.status(401).send('Unauthorized');
+		}
+		return this.membersService.addAchievement(id, body['achievement']);
+	}
 }

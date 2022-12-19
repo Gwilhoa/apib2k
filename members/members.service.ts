@@ -1,8 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Redirect } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { AchievementController } from 'src/achievement/achievement.controller';
+import { Achievement } from 'src/achievement/achievement.entity';
+import { AchievementService } from 'src/achievement/achievement.service';
 import { Squads } from 'src/squads/squads.entity';
-import { SquadsService } from 'src/squads/squads.service';
-import { Repository } from 'typeorm';
+import { QueryBuilder, Repository } from 'typeorm';
 import { CreateMembersDTO } from '../dto/create-members.dto';
 import { MembersDTO } from '../dto/members.dto';
 import { Members } from './members.entity';
@@ -105,18 +107,32 @@ export class MembersService {
 		const member = await this.membersRepository.findBy({
 			squad : ids
 		});
+		console.log(member);
 		return member;
 	}
 
-	public async addAchievement(ids, achievement) {
+	public async addAchievement(ids, ac) {
+		console.log(ac);
 		const member = await this.membersRepository.findOneBy({
 			id: ids.id
 		});
 		if (member)
 		{
-			member.achievements.push(achievement);
-			await this.membersRepository.save(member);
+			const query = this.membersRepository.createQueryBuilder('members');
+			query.leftJoinAndSelect('members.achievements', 'achievements');
+			await query.execute();
 		}
 		return member;
+	}
+
+	public async getAchievements(ids) {
+		const member = await this.membersRepository.findOneBy({
+			id: ids.id
+		});
+		if (member)
+		{
+			return member.achievements;
+		}
+		return null;
 	}
 }

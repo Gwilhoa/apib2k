@@ -20,6 +20,16 @@ export class Members {
 	@JoinColumn({ name: "squadid" })
 	squad: Squads;
 
-	@ManyToMany(type => Achievement , achievement => achievement.members, { eager: true, cascade: true})
+	@ManyToMany(type => Achievement, { eager: true, cascade: true})
+	@JoinTable({
+		name: "members_achievements",
+		joinColumn: {
+		 name: "member",
+		 referencedColumnName: "id"
+		},
+		inverseJoinColumn: {
+		 name: "achievement",
+		 referencedColumnName: "id"
+		 }})
 	achievements: Achievement[];
 }
