@@ -1,9 +1,12 @@
-import { Injectable, Redirect } from '@nestjs/common';
+import { BadRequestException, Injectable, Redirect } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import e, { query } from 'express';
 import { AchievementController } from 'src/achievement/achievement.controller';
 import { Achievement } from 'src/achievement/achievement.entity';
 import { AchievementService } from 'src/achievement/achievement.service';
+import { CreateAchievementDTO } from 'src/dto/create-achievement.dto';
 import { Squads } from 'src/squads/squads.entity';
+import { Title } from 'src/title/title.entity';
 import { QueryBuilder, Repository } from 'typeorm';
 import { CreateMembersDTO } from '../dto/create-members.dto';
 import { MembersDTO } from '../dto/members.dto';
@@ -118,10 +121,18 @@ export class MembersService {
 		});
 		if (member)
 		{
-			const query = this.membersRepository.createQueryBuilder('members');
-			query.leftJoinAndSelect('members.achievements', 'achievements');
-			await query.execute();
+			member.achievements.forEach(element => {
+				if (element.id == ac)
+				{
+					throw new BadRequestException('Achievement already exists');
+				}
+			});
+			const ach = this.membersRepository.createQueryBuilder('members');
+			ach.relation(Members, 'achievements').of(member).add(ac);
+			ach.execute();
+			
 		}
+
 		return member;
 	}
 
@@ -134,5 +145,94 @@ export class MembersService {
 			return member.achievements;
 		}
 		return null;
+	}
+
+	public async revokeAchievement(ids, ac) {
+		const member = await this.membersRepository.findOneBy({
+			id: ids.id
+		});
+		if (member)
+		{
+			var removeIndex = -1;
+				var i = 0;
+				while (i < member.achievements.length)
+				{
+					if (member.achievements[i].id == ac)
+					{
+						console.log(member.achievements[i]);
+						removeIndex = i;
+					}
+					i++;
+				}
+				member.achievements.splice(removeIndex, 1);
+				this.membersRepository.save(member);
+		}
+		return member;
+	}
+
+	public async addTitle(ids, title) {
+		const member = await this.membersRepository.findOneBy({
+			id: ids.id
+		});
+		if (member)
+		{
+			member.titles.forEach(element => {
+				if (element.name == title)
+				{
+					throw new BadRequestException('Title already obtained');
+				}
+			});
+			var title1 = new Title();
+			title1.name = title;
+			member.titles.push(title1);
+			this.membersRepository.save(member);
+		}
+	}
+
+	public async getTitles(ids) {
+		const member = await this.membersRepository.findOneBy({
+			id: ids.id
+		});
+		if (member)
+		{
+			return member.titles;
+		}
+	}
+
+	public async setTitle(ids, title) {
+		const member = await this.membersRepository.findOneBy({
+			id: ids.id
+		});
+		if (member)
+		{
+			member.titles.forEach(element => {
+				if (element.name == title)
+				{
+					member.title = element.name;
+					this.membersRepository.save(member);
+				}
+			});
+		}
+	}
+
+	public async revokeTitle(ids, title) {
+		const member = await this.membersRepository.findOneBy({
+			id: ids.id
+		});
+		if (member)
+		{
+			var removeIndex = -1;
+				var i = 0;
+				while (i < member.titles.length)
+				{
+					if (member.titles[i].name == title)
+					{
+						removeIndex = i;
+					}
+					i++;
+				}
+				member.titles.splice(removeIndex, 1);
+				this.membersRepository.save(member);
+		}
 	}
 }

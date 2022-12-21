@@ -92,6 +92,68 @@ export class MembersController {
 		if (head['token'] != secrettoken) {
 			return response.status(401).send('Unauthorized');
 		}
-		return this.membersService.addAchievement(id, body['achievement']);
+		try {
+			this.membersService.addAchievement(id, body['achievement'])
+		}
+		catch (e) {
+			response.status(400).send('Bad Request');
+			return;
+		}
+		response.status(200).send('OK');
+		return;
 	}
+
+	@Post(ver+'members/achievements/revoke/:id')
+	revokeAchievement(@Res({ passthrough: true }) response, @Headers() head, @Param() id, @Body() body) {
+		if (head['token'] != secrettoken) {
+			response.status(401).send('Unauthorized');
+			return;
+		}
+		this.membersService.revokeAchievement(id, body['achievement']);
+		response.status(200).send('OK');
+		return;
+	}
+
+	@Post(ver+'members/title/add/:id')
+	addTitle(@Res({ passthrough: true }) response, @Headers() head, @Param() id, @Body() body) {
+		if (head['token'] != secrettoken) {
+			response.status(401).send('Unauthorized');
+			return;
+		}
+		this.membersService.addTitle(id, body['title']);
+		response.status(200).send('OK');
+		return;
+	}
+
+	@Get(ver+'members/title/get/:id')
+	getTitle(@Res({ passthrough: true }) response, @Headers() head, @Param() id) {
+		if (head['token'] != secrettoken) {
+			response.status(401).send('Unauthorized');
+			return;
+		}
+		return this.membersService.getTitles(id);
+	}
+
+	@Post(ver+'members/title/remove/:id')
+	removeTitle(@Res({ passthrough: true }) response, @Headers() head, @Param() id, @Body() body) {
+		if (head['token'] != secrettoken) {
+			response.status(401).send('Unauthorized');
+			return;
+		}
+		this.membersService.revokeTitle(id, body['title']);
+		response.status(200).send('OK');
+		return;
+	}
+
+	@Post(ver+'members/title/set/:id')
+	setTitle(@Res({ passthrough: true }) response, @Headers() head, @Param() id, @Body() body) {
+		if (head['token'] != secrettoken) {
+			response.status(401).send('Unauthorized');
+			return;
+		}
+		this.membersService.setTitle(id, body['title']);
+		response.status(200).send('OK');
+		return;
+	}
+
 }

@@ -26,4 +26,7 @@ export class Achievement {
 	@JoinTable({ name: "members_achievements", joinColumn: { name: "achievement", referencedColumnName: "id" }, inverseJoinColumn: { name: "member", referencedColumnName: "id" }})
 	members: Members[];
 
+	@Column({nullable : false, default: false})
+	hidden : boolean;
+
 }

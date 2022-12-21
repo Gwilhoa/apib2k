@@ -1,6 +1,7 @@
 import { Achievement } from "src/achievement/achievement.entity";
 import { Squads } from "src/squads/squads.entity";
-import { Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, PrimaryColumn } from "typeorm";
+import { Title } from "src/title/title.entity";
+import { Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryColumn } from "typeorm";
 
 @Entity()
 export class Members {
@@ -32,4 +33,11 @@ export class Members {
 		 referencedColumnName: "id"
 		 }})
 	achievements: Achievement[];
+
+	@Column({nullable : true, default: false})
+	title : string;
+
+	@OneToMany(type => Title, title => title.member, { eager: true, cascade: true})
+	@JoinColumn({ name: "id" })
+	titles: Title[];
 }
