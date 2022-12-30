@@ -70,4 +70,39 @@ export class SquadsService {
 		});
 		squad.members;
 	}
+
+	public async updateSquads() {
+		const squad = await this.squadsRepository.find();
+		for (let i = 0; i < squad.length; i++) {
+			squad[i].PointsGiven = 0;
+			var members = squad[i].members;
+			var nbrs = 0;
+			console.log(members);
+			for (let j = 0; j < members.length; j++) {
+				nbrs += members[j].points;
+			}
+			squad[i].PointsTotal = nbrs;
+			await this.squadsRepository.save(squad[i]);
+		}
+		return true;
+	}
+
+	public async getSquadByMember(id) {
+		const squad = await this.squadsRepository.find();
+		for (let i = 0; i < squad.length; i++) {
+			for (let j = 0; j < squad[i].members.length; j++) {
+				if (squad[i].members[j].id == id) {
+					return squad[i];
+				}
+			}
+		}
+		return squad[0];
+	}
+
+	public async getMembersBySquad(ids) {
+		const squad = await this.squadsRepository.findOneBy({
+			id: ids.id
+		});
+		return squad.members;
+	}
 }

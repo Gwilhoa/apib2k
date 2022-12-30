@@ -49,4 +49,28 @@ export class SquadsController {
 		}
 		return this.squadService.removeSquad(id);
 	}
+
+	@Get('member/:id')
+	getSquadMembers(@Res({ passthrough: true }) response, @Headers() head, @Param() id) {
+		if (head['token'] != secrettoken) {
+			return response.status(401).send('Unauthorized');
+		}
+		return this.squadService.getSquadByMember(id['id']);
+	}
+
+	@Get('update')
+	updateSquads(@Res({ passthrough: true }) response, @Headers() head) {
+		if (head['token'] != secrettoken) {
+			return response.status(401).send('Unauthorized');
+		}
+		return this.squadService.updateSquads();
+	}
+
+	@Get('members/:id')
+	getMembers(@Res({ passthrough: true }) response, @Headers() head, @Param() id) {
+		if (head['token'] != secrettoken) {
+			return response.status(401).send('Unauthorized');
+		}
+		return this.squadService.getMembersBySquad(id);
+	}
 }

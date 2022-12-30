@@ -17,7 +17,7 @@ export class Members {
 	@Column( {nullable : false, default: 0} )
 	coins: number;
 
-	@ManyToOne(type => Squads, squad => squad.members, { eager: true, cascade: true,})
+	@ManyToOne(type => Squads, squad => squad.members, { })
 	@JoinColumn({ name: "squadid" })
 	squad: Squads;
 
