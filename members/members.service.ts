@@ -10,6 +10,7 @@ import { Title } from 'src/title/title.entity';
 import { QueryBuilder, Repository } from 'typeorm';
 import { CreateMembersDTO } from '../dto/create-members.dto';
 import { MembersDTO } from '../dto/members.dto';
+import { SquadsService } from '../squads/squads.service';
 import { Members } from './members.entity';
 
 @Injectable()
@@ -22,6 +23,7 @@ export class MembersService {
 		member.name = createMemberRequest?.name;
 		member.points = 0;
 		member.coins = 0;
+		member.memevotes = 2;
 		const sq = new Squads();
 		sq.id = createMemberRequest?.squadid;
 		member.squad = sq;
@@ -38,6 +40,28 @@ export class MembersService {
 		return memberDTO;
 	}
 
+	public async addbestmeme(ids) {
+		const member = await this.membersRepository.findOneBy({
+			id: ids.id
+		});
+		if (!member)
+			return 0;
+		member.bestmeme += 1;
+		member.points += 1000;
+		await this.membersRepository.save(member);
+		return member;
+	}
+
+	public async getbestmeme(ids) {
+		const member = await this.membersRepository.findOneBy({
+			id: ids.id
+		});
+		if (member)
+			return member.bestmeme;
+		return 0;
+	}
+
+
 	public async allMembers() {
 		const members = await this.membersRepository.find();
 		return members;
@@ -49,21 +73,40 @@ export class MembersService {
 		});
 	}
 
-	public async addPoints(ids, point)
-	{
-		console.log(ids.id);
+	public async updateMembers() {
+		const members = await this.membersRepository.find();
+		for (let i = 0; i < members.length; i++) {
+			const member = members[i];
+			member.memevotes = 1;
+			await this.membersRepository.save(member);
+		}
+	}
+
+	public async addMemeVote(ids) {
 		const member = await this.membersRepository.findOneBy({
 			id: ids.id
 		});
-		if (!member) {
-			return null;
-		}
-		point = parseInt(point);
-		member.points += point;
-		member.squad.PointsTotal += point;
-		console.log(member.points);
+		member.memevotes -= 1;
 		await this.membersRepository.save(member);
 		return member;
+	}
+
+	public async getMemeVote(ids) {
+		const member = await this.membersRepository.findOneBy({
+			id: ids.id
+		});
+		return member.memevotes;
+	}
+
+	public async addPoints(ids, point)
+	{
+		const member = await this.membersRepository.findOneBy({
+			id: ids.id
+		});
+		point = parseInt(point);
+		member.points += point;
+		await this.membersRepository.save(member);
+		return point;
 	}
 
 	public async removeMember(ids) {
@@ -78,12 +121,9 @@ export class MembersService {
 		const member = await this.membersRepository.findOneBy({
 			id: ids.id
 		});
-		if (member)
-		{
-			coin = parseInt(coin);
-			member.coins += coin;
-			await this.membersRepository.save(member);
-		}
+		coin = parseInt(coin);
+		member.coins += coin;
+		await this.membersRepository.save(member);
 		return member;
 	}
 

@@ -17,7 +17,7 @@ export class Members {
 	@Column( {nullable : false, default: 0} )
 	coins: number;
 
-	@ManyToOne(type => Squads, squad => squad.members, { })
+	@ManyToOne(type => Squads, squad => squad.members)
 	@JoinColumn({ name: "squadid" })
 	squad: Squads;
 
@@ -40,4 +40,10 @@ export class Members {
 	@OneToMany(type => Title, title => title.member, { eager: true, cascade: true})
 	@JoinColumn({ name: "id" })
 	titles: Title[];
+
+	@Column({nullable : false, default: 0})
+	memevotes: number;
+
+	@Column({nullable : false, default: 0})
+	bestmeme: number;
 }

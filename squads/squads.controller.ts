@@ -1,11 +1,26 @@
 import { Body, Controller, Get, Headers, Param, Post, Res, Response } from '@nestjs/common';
+import { setMaxIdleHTTPParsers } from 'http';
+import { threadId } from 'worker_threads';
 import { secrettoken, ver } from '../app.controller';
 import { CreateSquadDTO } from '../dto/create-squads.dto';
 import { SquadsService } from './squads.service';
+import { sleep } from '../main';
+
 
 @Controller( ver +'squads')
 export class SquadsController {
-	constructor(private readonly squadService: SquadsService) {}
+	constructor(private readonly squadService: SquadsService) {
+		const thread = async () => {
+			while (true) {
+				await sleep(1000);
+				this.squadService.updateSquads();
+			}
+		}
+
+		thread();
+
+	}
+
 	@Post()
 	public async createSquad(@Body() createSquadRequest: CreateSquadDTO,  @Res({ passthrough: true }) response, @Headers() head) {
 		if (head['token'] != secrettoken) {
@@ -56,14 +71,6 @@ export class SquadsController {
 			return response.status(401).send('Unauthorized');
 		}
 		return this.squadService.getSquadByMember(id['id']);
-	}
-
-	@Get('update')
-	updateSquads(@Res({ passthrough: true }) response, @Headers() head) {
-		if (head['token'] != secrettoken) {
-			return response.status(401).send('Unauthorized');
-		}
-		return this.squadService.updateSquads();
 	}
 
 	@Get('members/:id')

@@ -77,7 +77,6 @@ export class SquadsService {
 			squad[i].PointsGiven = 0;
 			var members = squad[i].members;
 			var nbrs = 0;
-			console.log(members);
 			for (let j = 0; j < members.length; j++) {
 				nbrs += members[j].points;
 			}

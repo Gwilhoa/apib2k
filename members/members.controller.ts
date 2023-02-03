@@ -5,11 +5,41 @@ import { MembersDTO } from '../dto/members.dto';
 import { Members } from './members.entity';
 import { Body, Get, Headers, Param, Post, Res, Response } from '@nestjs/common';
 import { secrettoken, ver } from '../app.controller';
+import { sleep } from '../main';
 
 @Controller(ver + 'members')
 export class MembersController {
-	  constructor(private readonly membersService: MembersService) {}
+	  constructor(private readonly membersService: MembersService) {
+		const thread = async () => {
+			var date = new Date().getDay();
+			while (true) {
+				await sleep(60000);
+				if (date != new Date().getDay()) {
+					date = new Date().getDay();
+					this.membersService.updateMembers();
+				}				
+			}
+		}
+
+		thread();
+	  }
 	
+	  @Get('memevote/:id')
+	  getMemeVote(@Res({ passthrough: true }) response, @Headers() head, @Param() id) {
+		  if (head['token'] != secrettoken) {
+			  return response.status(401).send('Unauthorized');
+		  }
+		  return this.membersService.getMemeVote(id);
+	  }
+  
+	  @Post('memevote/:id')
+	  addMemeVote(@Res({ passthrough: true }) response, @Headers() head, @Body() body, @Param() id) {
+		  if (head['token'] != secrettoken) {
+			  return response.status(401).send('Unauthorized');
+		  }
+		  return this.membersService.addMemeVote(id);
+	  }
+
 	@Get()
 	getMembers(@Res({ passthrough: true }) response, @Headers() head) {
 		if (head['token'] != secrettoken) {
@@ -54,13 +84,15 @@ export class MembersController {
 	}
 
 	@Post('/points/:id')
-	addPoints(@Res({ passthrough: true }) response, @Headers() head, @Param() id, @Body() body) {
+	addPoints(@Res({ passthrough: false }) response, @Headers() head, @Param() id, @Body() body) {
 		if (head['token'] != secrettoken) {
 			return response.status(401).send('Unauthorized');
 		}
-		if (!this.membersService.addPoints(id, body['points']))
+		var ret;
+		ret = this.membersService.addPoints(id, body['points'])
+		if (!ret)
 			return response.status(400).send('Bad Request');
-		return response.status(200).send('OK')
+		return response.status(200).send(ret)
 	}
 
 	@Post('/squads/:id')
@@ -148,4 +180,23 @@ export class MembersController {
 		return;
 	}
 
+	@Get('bestmeme/:id')
+	getBestMeme(@Res({ passthrough: true }) response, @Headers() head, @Param() id) {
+		if (head['token'] != secrettoken) {
+			response.status(401).send('Unauthorized');
+			return;
+		}
+		return this.membersService.getbestmeme(id);
+	}
+
+	@Post('bestmeme/:id')
+	addBestMeme(@Res({ passthrough: true }) response, @Headers() head, @Param() id, @Body() body) {
+		if (head['token'] != secrettoken) {
+			response.status(401).send('Unauthorized');
+			return;
+		}
+		this.membersService.addbestmeme(id);
+		response.status(200).send('OK');
+		return;
+	}
 }
