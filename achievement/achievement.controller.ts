@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Headers, Param, Post, Res } from '@nestjs/common';
-import { secrettoken, ver } from 'src/app.controller';
+import { token, ver } from '../main';
 import { AchievementService } from './achievement.service';
 
 @Controller (ver+'achievement')
@@ -8,7 +8,7 @@ export class AchievementController {
 
 	@Get()
 	getAll(@Res({ passthrough: true }) response, @Headers() head) {
-		if (head['token'] != secrettoken) {
+		if (head['token'] != token) {
 			return response.status(401).send('Unauthorized');
 		}
 		return this.achievementService.getAll();
@@ -16,7 +16,7 @@ export class AchievementController {
 
 	@Get('/id/:id')
 	getAchievementById(@Res({ passthrough: true }) response, @Headers() head, @Param() id) {
-		if (head['token'] != secrettoken) {
+		if (head['token'] != token) {
 			return response.status(401).send('Unauthorized');
 		}
 		return this.achievementService.getAchievementById(id);
@@ -24,7 +24,7 @@ export class AchievementController {
 
 	@Post()
 	createAchievement(@Res({ passthrough: true }) response, @Headers() head, @Body() body) {
-		if (head['token'] != secrettoken) {
+		if (head['token'] != token) {
 			return response.status(401).send('Unauthorized');
 		}
 		return this.achievementService.createAchievement(body);
@@ -32,7 +32,7 @@ export class AchievementController {
 
 	@Get('/remove/:id')
 	removeAchievement(@Res({ passthrough: true }) response, @Headers() head, @Param() id) {
-		if (head['token'] != secrettoken) {
+		if (head['token'] != token) {
 			return response.status(401).send('Unauthorized');
 		}
 		return this.achievementService.removeAchievement(id);

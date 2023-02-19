@@ -4,8 +4,7 @@ import { CreateMembersDTO } from '../dto/create-members.dto';
 import { MembersDTO } from '../dto/members.dto';
 import { Members } from './members.entity';
 import { Body, Get, Headers, Param, Post, Res, Response } from '@nestjs/common';
-import { secrettoken, ver } from '../app.controller';
-import { sleep } from '../main';
+import { sleep, token, ver } from '../main';
 
 @Controller(ver + 'members')
 export class MembersController {
@@ -26,7 +25,7 @@ export class MembersController {
 	
 	  @Get('memevote/:id')
 	  getMemeVote(@Res({ passthrough: true }) response, @Headers() head, @Param() id) {
-		  if (head['token'] != secrettoken) {
+		  if (head['token'] != token) {
 			  return response.status(401).send('Unauthorized');
 		  }
 		  return this.membersService.getMemeVote(id);
@@ -34,7 +33,7 @@ export class MembersController {
   
 	  @Post('memevote/:id')
 	  addMemeVote(@Res({ passthrough: true }) response, @Headers() head, @Body() body, @Param() id) {
-		  if (head['token'] != secrettoken) {
+		  if (head['token'] != token) {
 			  return response.status(401).send('Unauthorized');
 		  }
 		  return this.membersService.addMemeVote(id);
@@ -42,7 +41,7 @@ export class MembersController {
 
 	@Get()
 	getMembers(@Res({ passthrough: true }) response, @Headers() head) {
-		if (head['token'] != secrettoken) {
+		if (head['token'] != token) {
 			return response.status(401).send('Unauthorized');
 		}
 		return this.membersService.allMembers();
@@ -50,7 +49,7 @@ export class MembersController {
 
 	@Post()
 	public async createMember(@Body() createMemberRequest: CreateMembersDTO,  @Res({ passthrough: true }) response, @Headers() head) {
-		if (head['token'] != secrettoken) {
+		if (head['token'] != token) {
 			return response.status(401).send('Unauthorized');
 		}
 		const member = await this.membersService.createMember(createMemberRequest);
@@ -60,7 +59,7 @@ export class MembersController {
 
 	@Get('id/:id')
 	getMemberById(@Res({ passthrough: true }) response, @Headers() head, @Param() id) {
-		if (head['token'] != secrettoken) {
+		if (head['token'] != token) {
 			return response.status(401).send('Unauthorized');
 		}
 		response.status(200);
@@ -69,7 +68,7 @@ export class MembersController {
 
 	@Get('remove/:id')
 	removeMember(@Res({ passthrough: true }) response, @Headers() head, @Param() id) {
-		if (head['token'] != secrettoken) {
+		if (head['token'] != token) {
 			return response.status(401).send('Unauthorized');
 		}
 		return this.membersService.removeMember(id);
@@ -77,7 +76,7 @@ export class MembersController {
 
 	@Post('/coins/:id')
 	addCoins(@Res({ passthrough: true }) response, @Headers() head, @Param() id, @Body() body) {
-		if (head['token'] != secrettoken) {
+		if (head['token'] != token) {
 			return response.status(401).send('Unauthorized');
 		}
 		return this.membersService.addCoins(id, body['coins']);
@@ -85,7 +84,7 @@ export class MembersController {
 
 	@Post('/points/:id')
 	addPoints(@Res({ passthrough: false }) response, @Headers() head, @Param() id, @Body() body) {
-		if (head['token'] != secrettoken) {
+		if (head['token'] != token) {
 			return response.status(401).send('Unauthorized');
 		}
 		var ret;
@@ -97,7 +96,7 @@ export class MembersController {
 
 	@Post('/squads/:id')
 	addSquad(@Res({ passthrough: true }) response, @Headers() head, @Body() body, @Param() id) {
-		if (head['token'] != secrettoken) {
+		if (head['token'] != token) {
 			return response.status(401).send('Unauthorized');
 		}
 		return this.membersService.addSquad(body['squadid'], id);
@@ -105,7 +104,7 @@ export class MembersController {
 
 	@Get('achievements/:id')
 	getMemberAchievements(@Res({ passthrough: true }) response, @Headers() head, @Param() id) {
-		if (head['token'] != secrettoken) {
+		if (head['token'] != token) {
 			return response.status(401).send('Unauthorized');
 		}
 		return this.membersService.getAchievements(id);
@@ -113,7 +112,7 @@ export class MembersController {
 
 	@Post('achievements/:id')
 	addAchievement(@Res({ passthrough: true }) response, @Headers() head, @Param() id, @Body() body) {
-		if (head['token'] != secrettoken) {
+		if (head['token'] != token) {
 			return response.status(401).send('Unauthorized');
 		}
 		try {
@@ -129,7 +128,7 @@ export class MembersController {
 
 	@Post('achievements/revoke/:id')
 	revokeAchievement(@Res({ passthrough: true }) response, @Headers() head, @Param() id, @Body() body) {
-		if (head['token'] != secrettoken) {
+		if (head['token'] != token) {
 			response.status(401).send('Unauthorized');
 			return;
 		}
@@ -140,7 +139,7 @@ export class MembersController {
 
 	@Post('title/add/:id')
 	addTitle(@Res({ passthrough: true }) response, @Headers() head, @Param() id, @Body() body) {
-		if (head['token'] != secrettoken) {
+		if (head['token'] != token) {
 			response.status(401).send('Unauthorized');
 			return;
 		}
@@ -151,7 +150,7 @@ export class MembersController {
 
 	@Get('title/get/:id')
 	getTitle(@Res({ passthrough: true }) response, @Headers() head, @Param() id) {
-		if (head['token'] != secrettoken) {
+		if (head['token'] != token) {
 			response.status(401).send('Unauthorized');
 			return;
 		}
@@ -160,7 +159,7 @@ export class MembersController {
 
 	@Post('title/remove/:id')
 	removeTitle(@Res({ passthrough: true }) response, @Headers() head, @Param() id, @Body() body) {
-		if (head['token'] != secrettoken) {
+		if (head['token'] != token) {
 			response.status(401).send('Unauthorized');
 			return;
 		}
@@ -171,7 +170,7 @@ export class MembersController {
 
 	@Post('title/set/:id')
 	setTitle(@Res({ passthrough: true }) response, @Headers() head, @Param() id, @Body() body) {
-		if (head['token'] != secrettoken) {
+		if (head['token'] != token) {
 			response.status(401).send('Unauthorized');
 			return;
 		}
@@ -182,7 +181,7 @@ export class MembersController {
 
 	@Get('bestmeme/:id')
 	getBestMeme(@Res({ passthrough: true }) response, @Headers() head, @Param() id) {
-		if (head['token'] != secrettoken) {
+		if (head['token'] != token) {
 			response.status(401).send('Unauthorized');
 			return;
 		}
@@ -191,7 +190,7 @@ export class MembersController {
 
 	@Post('bestmeme/:id')
 	addBestMeme(@Res({ passthrough: true }) response, @Headers() head, @Param() id, @Body() body) {
-		if (head['token'] != secrettoken) {
+		if (head['token'] != token) {
 			response.status(401).send('Unauthorized');
 			return;
 		}

@@ -77,7 +77,8 @@ export class MembersService {
 		const members = await this.membersRepository.find();
 		for (let i = 0; i < members.length; i++) {
 			const member = members[i];
-			member.memevotes = 1;
+			if (member.memevotes < 3)
+				member.memevotes += 1;
 			await this.membersRepository.save(member);
 		}
 	}
