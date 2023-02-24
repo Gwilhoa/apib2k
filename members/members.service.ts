@@ -1,5 +1,6 @@
 import { BadRequestException, Injectable, Redirect } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { randomInt } from 'crypto';
 import e, { query } from 'express';
 import { AchievementController } from 'src/achievement/achievement.controller';
 import { Achievement } from 'src/achievement/achievement.entity';
@@ -11,11 +12,15 @@ import { QueryBuilder, Repository } from 'typeorm';
 import { CreateMembersDTO } from '../dto/create-members.dto';
 import { MembersDTO } from '../dto/members.dto';
 import { SquadsService } from '../squads/squads.service';
+import { waifusMembers } from '../waifus-members/waifus-members.entity';
+import { Waifu } from '../waifus/waifus.entity';
+import { WaifusService } from '../waifus/waifus.service';
 import { Members } from './members.entity';
 
 @Injectable()
 export class MembersService {
-	constructor(@InjectRepository(Members) private membersRepository: Repository<Members>) {}
+	constructor(@InjectRepository(Members) private membersRepository: Repository<Members>, @InjectRepository(Waifu) private waifuRepository: Repository<Waifu>) {} 
+
 
 	public async createMember(createMemberRequest: CreateMembersDTO) {
 		const member: Members = new Members();
@@ -276,4 +281,73 @@ export class MembersService {
 				this.membersRepository.save(member);
 		}
 	}
+
+	public async getWaifus(ids) {
+		const member = await this.membersRepository.findOneBy({
+			id: ids.id
+		});
+		if (member)
+		{
+			return member.waifus;
+		}
+	}
+
+	public async catchWaifu(ids) {
+		const member = await this.membersRepository.findOneBy({
+			id: ids.id
+		});
+		if (member)
+		{
+			if (member.waifutime != 0 && member.waifutime + 10800000 > new Date().getMilliseconds())
+			{
+				throw new BadRequestException('You can catch a waifu in ' + (member.waifutime + 10800000 - new Date().getMilliseconds()) + ' milliseconds');
+			}
+			var waifus = await this.waifuRepository.find();
+			var waifu = waifus[randomInt(0, waifus.length - 1)];
+			var catchWaifu = new waifusMembers();
+			catchWaifu.waifu = waifu;
+			catchWaifu.member = member.id;
+			catchWaifu.rarety = randomInt(0,3);
+			if (catchWaifu.rarety == 3){
+				if (waifu.legendary >= 1)
+				{
+					catchWaifu.rarety = 2;
+				}
+				else
+				{
+					waifu.legendary += 1;
+				}
+			}
+			if (catchWaifu.rarety == 2)
+			{
+				if (waifu.epic >= 3)
+				{
+					catchWaifu.rarety = 1;
+				}
+				else
+				{
+					waifu.epic += 1;
+				}
+			}
+			if (catchWaifu.rarety == 1)
+			{
+				if (waifu.rare >= 5)
+				{
+					catchWaifu.rarety = 0;
+				}
+				else
+				{
+					waifu.rare += 1;
+				}
+			}
+			member.waifus.push(catchWaifu);
+			member.waifutime = new Date().getMilliseconds();
+			this.membersRepository.save(member);
+			this.waifuRepository.save(waifu);
+			console.log(catchWaifu);
+			return catchWaifu;
+		}
+		return null;
+	}
+
 }

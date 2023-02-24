@@ -1,8 +1,8 @@
 import { Body, Controller, Get, Headers, Param, Post, Res } from '@nestjs/common';
-import { token, ver } from '../main';
+import { ver, token } from '../app.controller';
 import { AchievementService } from './achievement.service';
 
-@Controller (ver+'achievement')
+@Controller (ver +'achievement')
 export class AchievementController {
 	constructor(private readonly achievementService: AchievementService) {}
 

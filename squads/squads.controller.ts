@@ -3,7 +3,8 @@ import { setMaxIdleHTTPParsers } from 'http';
 import { threadId } from 'worker_threads';
 import { CreateSquadDTO } from '../dto/create-squads.dto';
 import { SquadsService } from './squads.service';
-import { sleep, token, ver } from '../main';
+import { sleep,   getEnvVar} from '../main';
+import { ver, token } from '../app.controller';
 
 
 @Controller( ver +'squads')

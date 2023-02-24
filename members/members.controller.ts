@@ -1,10 +1,9 @@
 import { Controller } from '@nestjs/common';
 import { MembersService } from './members.service';
 import { CreateMembersDTO } from '../dto/create-members.dto';
-import { MembersDTO } from '../dto/members.dto';
-import { Members } from './members.entity';
 import { Body, Get, Headers, Param, Post, Res, Response } from '@nestjs/common';
-import { sleep, token, ver } from '../main';
+import { sleep } from '../main';
+import { ver, token } from '../app.controller';
 
 @Controller(ver + 'members')
 export class MembersController {
@@ -197,5 +196,32 @@ export class MembersController {
 		this.membersService.addbestmeme(id);
 		response.status(200).send('OK');
 		return;
+	}
+
+	@Get('waifus/:id')
+	getWaifus(@Res({ passthrough: true }) response, @Headers() head, @Param() id) {
+		if (head['token'] != token) {
+			response.status(401).send('Unauthorized');
+			return;
+		}
+		return this.membersService.getWaifus(id);
+	}
+
+	@Get('catchwaifu/:id')
+	catchWaifu(@Res({ passthrough: true }) response, @Headers() head, @Param() id, @Body() body) {
+		if (head['token'] != token) {
+			response.status(401).send('Unauthorized');
+			return;
+		}
+		try {
+			var ret = this.membersService.catchWaifu(id);
+			if (ret == null) {
+				response.status(400).send('Bad Request');
+				return;
+			}
+			return ret;
+		} catch (error){
+			return error;
+		}
 	}
 }

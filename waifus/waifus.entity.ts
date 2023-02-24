@@ -1,5 +1,6 @@
-import { Entity } from "typeorm";
+import { Entity, ManyToOne } from "typeorm";
 import { Column, PrimaryGeneratedColumn } from "typeorm";
+import { waifusMembers } from "../waifus-members/waifus-members.entity";
 
 @Entity()
 export class Waifu {
@@ -23,4 +24,5 @@ export class Waifu {
 
   @Column()
   legendary: number;
+
 }

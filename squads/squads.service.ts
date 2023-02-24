@@ -74,7 +74,7 @@ export class SquadsService {
 	public async updateSquads() {
 		const squad = await this.squadsRepository.find();
 		for (let i = 0; i < squad.length; i++) {
-			squad[i].PointsGiven = 0;
+			squad[i].PointsGiven = squad[i].PointsGiven;
 			var members = squad[i].members;
 			var nbrs = 0;
 			for (let j = 0; j < members.length; j++) {

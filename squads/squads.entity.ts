@@ -18,7 +18,7 @@ export class Squads {
 	@Column({ nullable : false, length: 36 })
 	color: string;
 
-	@OneToMany(type => Members, member => member.squad, { 		eager: true,
+	@OneToMany(type => Members, member => member.squad, {eager: true,
 		onDelete: 'CASCADE',
 		cascade: true })
 	@JoinColumn({ name: "squadid" })

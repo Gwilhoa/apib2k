@@ -2,6 +2,8 @@ import { Achievement } from "src/achievement/achievement.entity";
 import { Squads } from "src/squads/squads.entity";
 import { Title } from "src/title/title.entity";
 import { Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryColumn } from "typeorm";
+import { WaifusMembersController } from "../waifus-members/waifus-members.controller";
+import { waifusMembers } from "../waifus-members/waifus-members.entity";
 
 @Entity()
 export class Members {
@@ -46,4 +48,11 @@ export class Members {
 
 	@Column({nullable : false, default: 0})
 	bestmeme: number;
+
+	@OneToMany(type => waifusMembers, waifusMembers => waifusMembers.member, { eager: true, cascade: true})
+	@JoinColumn({ name: "id" })
+	waifus: waifusMembers[];
+
+	@Column({nullable : false, default: 0})
+	waifutime: number;
 }

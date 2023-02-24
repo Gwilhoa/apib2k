@@ -1,7 +1,4 @@
 import { NestFactory } from '@nestjs/core';
-import { config } from 'dotenv';
-import { env } from 'process';
-import { async } from 'rxjs';
 import { AppModule } from './app.module';
 
 
@@ -18,7 +15,6 @@ export function sleep(ms: number) {
   }
 
   export function getEnvVar(v): string {
-	console.log(process.env)
     const ret = process.env[v];
     if (ret === undefined) {
         throw new Error("process.env." + v + " is undefined!");
@@ -27,10 +23,4 @@ export function sleep(ms: number) {
 }
 const dotenv = require('dotenv');
 dotenv.config();
-export const db_host : string = getEnvVar("DB_HOSTNAME");
-export const db_username : string = getEnvVar("DB_USERNAME");
-export const db_pwd : string = getEnvVar("DB_PWD");
-export const db_name : string = getEnvVar("DB_NAME");
-export const token : string = getEnvVar("TOKEN");
-export const ver : string = '/v1/';
 bootstrap();

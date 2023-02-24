@@ -25,4 +25,22 @@ export class WaifusService {
 		const waifus = await this.waifuRepository.find();
 		return waifus;
 	}
+
+	public async getWaifuById(id: number) {
+		const waifu = await this.waifuRepository.findOneBy({
+			id: id
+		});
+		return waifu;
+	}
+
+	public async resetWaifus() {
+		const waifus = await this.waifuRepository.find();
+		for (const waifu of waifus) {
+			waifu.rare = 0;
+			waifu.epic = 0;
+			waifu.legendary = 0;
+			await this.waifuRepository.save(waifu);
+		}
+		return waifus;
+	}
 }
