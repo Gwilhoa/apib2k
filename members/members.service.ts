@@ -8,9 +8,11 @@ import { AchievementService } from 'src/achievement/achievement.service';
 import { CreateAchievementDTO } from 'src/dto/create-achievement.dto';
 import { Squads } from 'src/squads/squads.entity';
 import { Title } from 'src/title/title.entity';
+import { json } from 'stream/consumers';
 import { QueryBuilder, Repository } from 'typeorm';
 import { CreateMembersDTO } from '../dto/create-members.dto';
 import { MembersDTO } from '../dto/members.dto';
+import { WaifuMembersDTO } from '../dto/waifu-members.dto';
 import { SquadsService } from '../squads/squads.service';
 import { waifusMembers } from '../waifus-members/waifus-members.entity';
 import { Waifu } from '../waifus/waifus.entity';
@@ -300,14 +302,23 @@ export class MembersService {
 		{
 			if (member.waifutime != 0 && member.waifutime + 10800000 > new Date().getMilliseconds())
 			{
-				throw new BadRequestException('You can catch a waifu in ' + (member.waifutime + 10800000 - new Date().getMilliseconds()) + ' milliseconds');
+				return 'You can catch a waifu in ' + (member.waifutime + 10800000 - new Date().getMilliseconds()) + ' milliseconds';
 			}
 			var waifus = await this.waifuRepository.find();
 			var waifu = waifus[randomInt(0, waifus.length - 1)];
 			var catchWaifu = new waifusMembers();
 			catchWaifu.waifu = waifu;
 			catchWaifu.member = member.id;
-			catchWaifu.rarety = randomInt(0,3);
+			var prob = randomInt(0, 100);
+			if (prob >= 99) {
+				catchWaifu.rarety = 3;
+			} else if (prob >= 90) {
+				catchWaifu.rarety = 2;
+			} else if (prob >= 70) {
+				catchWaifu.rarety = 1;
+			} else {
+				catchWaifu.rarety = 0;
+			}
 			if (catchWaifu.rarety == 3){
 				if (waifu.legendary >= 1)
 				{
@@ -345,7 +356,13 @@ export class MembersService {
 			this.membersRepository.save(member);
 			this.waifuRepository.save(waifu);
 			console.log(catchWaifu);
-			return catchWaifu;
+			var ret = new WaifuMembersDTO();
+			ret.exp = 0;
+			ret.waifu = waifu;
+			ret.rarety = catchWaifu.rarety;
+			ret.id = 'null';
+			ret.level = 0;
+			return ret;
 		}
 		return null;
 	}

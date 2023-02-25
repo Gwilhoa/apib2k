@@ -1,7 +1,6 @@
-import { Controller, Post, Res, Headers, Body , Get, Param} from '@nestjs/common';
+import {Controller, Post, Res, Headers, Body , Get, Param} from '@nestjs/common';
 import { WaifusService } from './waifus.service';
 import { ver, token } from '../app.controller';
-
 
 @Controller(ver + 'waifus')
 export class WaifusController {

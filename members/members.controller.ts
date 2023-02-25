@@ -213,15 +213,11 @@ export class MembersController {
 			response.status(401).send('Unauthorized');
 			return;
 		}
-		try {
 			var ret = this.membersService.catchWaifu(id);
 			if (ret == null) {
 				response.status(400).send('Bad Request');
 				return;
 			}
 			return ret;
-		} catch (error){
-			return error;
-		}
 	}
 }
