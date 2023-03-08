@@ -2,6 +2,7 @@ import { BadRequestException, Injectable, Redirect } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { randomInt } from 'crypto';
 import e, { query } from 'express';
+import { waitForDebugger } from 'inspector';
 import { AchievementController } from 'src/achievement/achievement.controller';
 import { Achievement } from 'src/achievement/achievement.entity';
 import { AchievementService } from 'src/achievement/achievement.service';
@@ -9,7 +10,7 @@ import { CreateAchievementDTO } from 'src/dto/create-achievement.dto';
 import { Squads } from 'src/squads/squads.entity';
 import { Title } from 'src/title/title.entity';
 import { json } from 'stream/consumers';
-import { QueryBuilder, Repository } from 'typeorm';
+import { Double, QueryBuilder, Repository } from 'typeorm';
 import { CreateMembersDTO } from '../dto/create-members.dto';
 import { MembersDTO } from '../dto/members.dto';
 import { WaifuMembersDTO } from '../dto/waifu-members.dto';
@@ -300,69 +301,72 @@ export class MembersService {
 		});
 		if (member)
 		{
-			if (member.waifutime != 0 && member.waifutime + 10800000 > new Date().getMilliseconds())
+			var date = new Date();
+			date.setTime(member.waifutime);
+			date.setHours(date.getHours() + 3);
+			var wait = date.getTime();
+			if (wait > Date.now())
 			{
-				return 'You can catch a waifu in ' + (member.waifutime + 10800000 - new Date().getMilliseconds()) + ' milliseconds';
+				return date.getTime();
 			}
-			var waifus = await this.waifuRepository.find();
-			var waifu = waifus[randomInt(0, waifus.length - 1)];
-			var catchWaifu = new waifusMembers();
-			catchWaifu.waifu = waifu;
-			catchWaifu.member = member.id;
-			var prob = randomInt(0, 100);
-			if (prob >= 99) {
-				catchWaifu.rarety = 3;
-			} else if (prob >= 90) {
-				catchWaifu.rarety = 2;
-			} else if (prob >= 70) {
-				catchWaifu.rarety = 1;
-			} else {
-				catchWaifu.rarety = 0;
-			}
-			if (catchWaifu.rarety == 3){
-				if (waifu.legendary >= 1)
-				{
+				var waifus = await this.waifuRepository.find();
+				var waifu = waifus[randomInt(0, waifus.length - 1)];
+				var catchWaifu = new waifusMembers();
+				catchWaifu.waifu = waifu;
+				catchWaifu.member = member.id;
+				var prob = randomInt(0, 100);
+				if (prob >= 99) {
+					catchWaifu.rarety = 3;
+				} else if (prob >= 90) {
 					catchWaifu.rarety = 2;
-				}
-				else
-				{
-					waifu.legendary += 1;
-				}
-			}
-			if (catchWaifu.rarety == 2)
-			{
-				if (waifu.epic >= 3)
-				{
+				} else if (prob >= 70) {
 					catchWaifu.rarety = 1;
-				}
-				else
-				{
-					waifu.epic += 1;
-				}
-			}
-			if (catchWaifu.rarety == 1)
-			{
-				if (waifu.rare >= 5)
-				{
+				} else {
 					catchWaifu.rarety = 0;
 				}
-				else
-				{
-					waifu.rare += 1;
+				if (catchWaifu.rarety == 3){
+					if (waifu.legendary >= 1)
+					{
+						catchWaifu.rarety = 2;
+					}
+					else
+					{
+						waifu.legendary += 1;
+					}
 				}
-			}
-			member.waifus.push(catchWaifu);
-			member.waifutime = new Date().getMilliseconds();
-			this.membersRepository.save(member);
-			this.waifuRepository.save(waifu);
-			console.log(catchWaifu);
-			var ret = new WaifuMembersDTO();
-			ret.exp = 0;
-			ret.waifu = waifu;
-			ret.rarety = catchWaifu.rarety;
-			ret.id = 'null';
-			ret.level = 0;
-			return ret;
+				if (catchWaifu.rarety == 2)
+				{
+					if (waifu.epic >= 3)
+					{
+						catchWaifu.rarety = 1;
+					}
+					else
+					{
+						waifu.epic += 1;
+					}
+				}
+				if (catchWaifu.rarety == 1)
+				{
+					if (waifu.rare >= 5)
+					{
+						catchWaifu.rarety = 0;
+					}
+					else
+					{
+						waifu.rare += 1;
+					}
+				}
+				member.waifutime = Date.now();
+				member.waifus.push(catchWaifu);
+				this.membersRepository.save(member);
+				this.waifuRepository.save(waifu);
+				var ret = new WaifuMembersDTO();
+				ret.exp = 0;
+				ret.waifu = waifu;
+				ret.rarety = catchWaifu.rarety;
+				ret.id = 'null';
+				ret.level = 0;
+				return ret;
 		}
 		return null;
 	}

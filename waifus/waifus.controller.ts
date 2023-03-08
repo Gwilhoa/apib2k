@@ -18,9 +18,6 @@ export class WaifusController {
 
 	@Get()
 	getAllWaifus(@Res({ passthrough: true }) response, @Headers() head) {
-		if (head['token'] != token) {
-			return response.status(401).send('Unauthorized');
-		}
 		return this.waifusService.allWaifus();
 	}
 
@@ -32,6 +29,13 @@ export class WaifusController {
 		return this.waifusService.getWaifuById(id);
 	}
 
+	@Get('/search/:name')
+	getWaifuByName(@Res({ passthrough: true }) response, @Headers() head, @Param('name') name) {
+		if (head['token'] != token) {
+			return response.status(401).send('Unauthorized');
+		}
+		return this.waifusService.getWaifuByName(name);
+	}
 	@Get("reset")
 	resetWaifus(@Res({ passthrough: true }) response, @Headers() head) {
 		if (head['token'] != token) {

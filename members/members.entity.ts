@@ -53,6 +53,6 @@ export class Members {
 	@JoinColumn({ name: "id" })
 	waifus: waifusMembers[];
 
-	@Column({nullable : false, default: 0})
+	@Column({nullable : false, default: 0, type: "bigint"})
 	waifutime: number;
 }

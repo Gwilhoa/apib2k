@@ -43,4 +43,17 @@ export class WaifusService {
 		}
 		return waifus;
 	}
+
+	public async getWaifuByName(name: string) {
+		const waifus = await this.waifuRepository.find();
+		var ret: Waifu[] = [];
+		var i = 0;
+		while (i < waifus.length) {
+			if (waifus[i].name.toLowerCase().startsWith(name.toLowerCase())) {
+				ret.push(waifus[i]);
+			}
+			i++;
+		}
+		return ret;
+	}
 }
