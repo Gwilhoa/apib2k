@@ -36,8 +36,14 @@ export class MembersService {
 		sq.id = createMemberRequest?.squadid;
 		member.squad = sq;
 
-		await this.membersRepository.save(member);
-
+		try {
+			await this.membersRepository.save(member);
+		} catch (error) {
+			if (error.code === "ER_TRUNCATED_WRONG_VALUE_FOR_FIELD") {
+				member.name = "débile";
+				await this.membersRepository.save(member);
+			  }
+		}
 		const memberDTO: MembersDTO = new MembersDTO();
 		memberDTO.id = member.id;
 		memberDTO.name = member.name;
@@ -371,4 +377,21 @@ export class MembersService {
 		return null;
 	}
 
+	public async modifyName(ids, name) {
+		const member = await this.membersRepository.findOneBy({
+			id: ids.id
+		});
+		if (member)
+		{
+			member.name = name;
+			try {
+				await this.membersRepository.save(member);
+			} catch (error) {
+				if (error.code === "ER_TRUNCATED_WRONG_VALUE_FOR_FIELD") {
+					member.name = "débile";
+					await this.membersRepository.save(member);
+				  }
+			}
+		}
+	}
 }

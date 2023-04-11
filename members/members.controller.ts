@@ -220,4 +220,15 @@ export class MembersController {
 			}
 			return ret;
 	}
+
+	@Post('modifyname/:id')
+	modifyName(@Res({ passthrough: true }) response, @Headers() head, @Param() id, @Body() body) {
+		if (head['token'] != token) {
+			response.status(401).send('Unauthorized');
+			return;
+		}
+		this.membersService.modifyName(id, body['name']);
+		response.status(200).send('OK');
+		return;
+	}
 }

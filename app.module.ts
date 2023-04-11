@@ -10,10 +10,11 @@ import { TitleController } from './title/title.controller';
 import { WaifusMembersModule } from './waifus-members/waifus-members.module';
 import { WaifusModule } from './waifus/waifus.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { GeneralModule } from './general/general.module';
 
 
 @Module({
-  imports: [ SquadsModule, MembersModule, DatabaseModule, AchievementModule, WaifusMembersModule, WaifusModule],
+  imports: [ SquadsModule, MembersModule, DatabaseModule, AchievementModule, WaifusMembersModule, WaifusModule, GeneralModule],
   controllers: [AppController, TitleController],
   providers: [AppService, TitleService],
 })
