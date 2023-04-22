@@ -39,3 +39,31 @@ access_token
 
 {% endswagger-response %}
 {% endswagger %}
+
+{% swagger method="delete" path="/members" baseUrl="https://api.bitume2000.fr/v2" summary="supprimer un membre du serveur" %}
+{% swagger-description %}
+
+{% endswagger-description %}
+
+{% swagger-parameter in="header" name="authorization" required="true" %}
+
+{% endswagger-parameter %}
+
+{% swagger-response status="200: OK" description="" %}
+
+{% endswagger-response %}
+
+{% swagger-response status="204: No Content" description="" %}
+
+{% endswagger-response %}
+
+{% swagger-response status="401: Unauthorized" description="" %}
+
+{% endswagger-response %}
+{% endswagger %}
+
+{% swagger method="get" path="" baseUrl="" summary="" %}
+{% swagger-description %}
+
+{% endswagger-description %}
+{% endswagger %}
