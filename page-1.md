@@ -4,7 +4,7 @@ description: Les équipes du Bitume2000
 
 # Escouades
 
-{% swagger method="delete" path="/squads" baseUrl="https://api.bitume2000.fr/v2" summary="" %}
+{% swagger method="delete" path="/squads" baseUrl="https://api.bitume2000.fr/v2" summary="Supprimer une escouade" %}
 {% swagger-description %}
 Supprimer une escouade
 {% endswagger-description %}
@@ -146,7 +146,7 @@ unauthorized
 {% endswagger-response %}
 {% endswagger %}
 
-{% swagger method="post" path="/squads/id/{id}" baseUrl="https://api.bitume2000.fr/v2" summary="donner / enlever des points manuel à une escouade" %}
+{% swagger method="patch" path="/squads/id/{id}" baseUrl="https://api.bitume2000.fr/v2" summary="donner / enlever des points manuel à une escouade" %}
 {% swagger-description %}
 
 {% endswagger-description %}
