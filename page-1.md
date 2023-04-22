@@ -113,6 +113,10 @@ invalid argument
 {% swagger-response status="401: Unauthorized" description="bad authorization" %}
 unauthorized
 {% endswagger-response %}
+
+{% swagger-response status="409: Conflict" description="id already exist" %}
+
+{% endswagger-response %}
 {% endswagger %}
 
 {% swagger method="get" path="/squads/id/{id}" baseUrl="https://api.bitume2000.fr/v2" summary="Récuperer une escouade selon son identifiants" %}
