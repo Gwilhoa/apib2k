@@ -354,3 +354,45 @@ access_token
 {% endswagger-response %}
 {% endswagger %}
 
+{% swagger method="post" path="/members/achievement/{id}" baseUrl="https://api.bitume2000.fr/v2" summary="ajouter un achievement à une personne" %}
+{% swagger-description %}
+
+{% endswagger-description %}
+
+{% swagger-parameter in="header" name="authorization" required="true" %}
+
+{% endswagger-parameter %}
+
+{% swagger-parameter in="body" name="id" required="true" %}
+achievement_id
+{% endswagger-parameter %}
+
+{% swagger-response status="200: OK" description="" %}
+```json
+[{
+    "id": 1,
+    "name": "Bienvenu à poudlard",
+    "description": "avoir mis un pied a l'école des sorciers",
+    "coins": 0,
+    "points": 1000,
+    "title": "Apprenti sorcier",
+    "hidden": false
+}, {
+    "id": 2,
+    "name": "Wingardium leviosa",
+    "description": "apprendre le sort",
+    "coins": 0,
+    "point": 1500,
+    "hidden": false
+}]
+```
+{% endswagger-response %}
+
+{% swagger-response status="400: Bad Request" description="" %}
+
+{% endswagger-response %}
+
+{% swagger-response status="401: Unauthorized" description="" %}
+
+{% endswagger-response %}
+{% endswagger %}
