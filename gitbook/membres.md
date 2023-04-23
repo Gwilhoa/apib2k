@@ -222,3 +222,48 @@ access_token
 
 {% endswagger-response %}
 {% endswagger %}
+
+
+{% swagger method="patch" path="/members/coins/{id}" baseUrl="https://api.bitume2000.fr/v2" summary="modifier le nombres de coins" %}
+{% swagger-description %}
+
+{% endswagger-description %}
+
+{% swagger-parameter in="header" name="authorization" required="true" %}
+access_token
+{% endswagger-parameter %}
+
+{% swagger-response status="200: OK" description="" %}
+```json
+{
+    "id": "151616116161651",
+    "name": "Harry Potter",
+    "points": 492629,
+    "coins": 21,
+    "title": "Hero",
+    "memevotes": 3,
+    "bestmeme": 3,
+    "waifutime": "",
+    "squad": {
+        "id": "54554494494944",
+        "name": "Gryffondor",
+        "PointsGiven": 0,
+        "PointsTotal": 842703448,
+        "color": "-14653804"
+    }
+}
+```
+{% endswagger-response %}
+
+{% swagger-response status="204: No Content" description="" %}
+
+{% endswagger-response %}
+
+{% swagger-response status="401: Unauthorized" description="" %}
+
+{% endswagger-response %}
+
+{% swagger-response status="409: Conflict" description="" %}
+
+{% endswagger-response %}
+{% endswagger %}
