@@ -103,6 +103,10 @@ unauthorized
 
 {% endswagger-description %}
 
+{% swagger-parameter in="header" name="authorization" required="true" %}
+
+{% endswagger-parameter %}
+
 {% swagger-response status="200: OK" description="" %}
 ```json
 {
@@ -115,7 +119,7 @@ unauthorized
     "bestmeme": 3,
     "waifutime": "",
     "squad": {
-        "id": "89212165256156",
+        "id": "54554494494944",
         "name": "Gryffondor",
         "PointsGiven": 0,
         "PointsTotal": 842703448,
@@ -123,5 +127,98 @@ unauthorized
     }
 }
 ```
+{% endswagger-response %}
+
+{% swagger-response status="204: No Content" description="" %}
+
+{% endswagger-response %}
+
+{% swagger-response status="401: Unauthorized" description="" %}
+
+{% endswagger-response %}
+{% endswagger %}
+
+{% swagger method="get" path="/members/achievement/{id}" baseUrl="https://api.bitume2000.fr/v2" summary="récuperer les succès gagné par quelqu'un" %}
+{% swagger-description %}
+
+{% endswagger-description %}
+
+{% swagger-parameter in="header" name="authorization" %}
+
+{% endswagger-parameter %}
+
+{% swagger-response status="200: OK" description="" %}
+```json
+[{
+    "id": 1,
+    "name": "Bienvenu à poudlard",
+    "description": "avoir mis un pied a l'école des sorciers",
+    "coins": 0,
+    "points": 1000,
+    "title": "Apprenti sorcier",
+    "hidden": false
+}, {
+    "id": 2,
+    "name": "Wingardium leviosa",
+    "description": "apprendre le sort",
+    "coins": 0,
+    "point": 1500,
+    "hidden": false
+}]
+```
+
+
+{% endswagger-response %}
+
+{% swagger-response status="204: No Content" description="" %}
+
+{% endswagger-response %}
+
+{% swagger-response status="401: Unauthorized" description="" %}
+
+{% endswagger-response %}
+{% endswagger %}
+
+{% swagger method="patch" path="/members/points/{id}" baseUrl="https://api.bitume2000.fr/v2" summary="modifier le nombres de point" %}
+{% swagger-description %}
+
+{% endswagger-description %}
+
+{% swagger-parameter in="header" name="authorization" required="true" %}
+access_token
+{% endswagger-parameter %}
+
+{% swagger-response status="200: OK" description="" %}
+```json
+{
+    "id": "151616116161651",
+    "name": "Harry Potter",
+    "points": 492629,
+    "coins": 21,
+    "title": "Hero",
+    "memevotes": 3,
+    "bestmeme": 3,
+    "waifutime": "",
+    "squad": {
+        "id": "54554494494944",
+        "name": "Gryffondor",
+        "PointsGiven": 0,
+        "PointsTotal": 842703448,
+        "color": "-14653804"
+    }
+}
+```
+{% endswagger-response %}
+
+{% swagger-response status="204: No Content" description="" %}
+
+{% endswagger-response %}
+
+{% swagger-response status="401: Unauthorized" description="" %}
+
+{% endswagger-response %}
+
+{% swagger-response status="409: Conflict" description="" %}
+
 {% endswagger-response %}
 {% endswagger %}
