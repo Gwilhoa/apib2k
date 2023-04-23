@@ -1,6 +1,6 @@
 # Table of contents
 
 * [ApiB2K](README.md)
-  * [Documentation](gitbook/SUMMARY.md)
+  * [Table of contents](gitbook/SUMMARY.md)
+  * [Escouades](gitbook/escouade.md)
   * [Membres](gitbook/membres.md)
-  * [Escouades](gitbook/page-1.md)
