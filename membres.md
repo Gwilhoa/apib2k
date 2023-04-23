@@ -32,11 +32,47 @@ access_token
 {% endswagger-parameter %}
 
 {% swagger-response status="200: OK" description="" %}
+```json
+[{
+    "id": "54546464654",
+    "name": "Harry Potter",
+    "points": 395,
+    "coins": 0,
+    "title": "Hero",
+    "memevotes": 3,
+    "bestmeme": 0,
+    "waifutime": "0",
+    "squad": {
+        "id": "651651651651",
+        "name": "Gryffondor",
+        "PointsGiven": 0,
+        "PointsTotal": 3003493,
+        "color": "-1671646"
+    }
+}, {
+    "id": "543543543",
+    "name": "Drago Malfoy",
+    "points": 352985,
+    "coins": 21,
+    "title": "0",
+    "memevotes": 3,
+    "bestmeme": 0,
+    "waifutime": "1678198359582",
+    "squad": {
+        "id": "56451515436546546546",
+        "name": "serpentard",
+        "PointsGiven": 0,
+        "PointsTotal": 842703053,
+        "color": "-14653804"
+    }
+}]
+```
+
 
 {% endswagger-response %}
 
 {% swagger-response status="401: Unauthorized" description="" %}
-
+unauthorized
 {% endswagger-response %}
 {% endswagger %}
 
@@ -62,8 +98,30 @@ access_token
 {% endswagger-response %}
 {% endswagger %}
 
-{% swagger method="get" path="" baseUrl="" summary="" %}
+{% swagger method="get" path="/members/id/{id}" baseUrl="https://api.bitume2000.fr/v2" summary="récuperer les informations d'un member" %}
 {% swagger-description %}
 
 {% endswagger-description %}
+
+{% swagger-response status="200: OK" description="" %}
+```json
+{
+    "id": "151616116161651",
+    "name": "Harry Potter",
+    "points": 492629,
+    "coins": 21,
+    "title": "Hero",
+    "memevotes": 3,
+    "bestmeme": 3,
+    "waifutime": "",
+    "squad": {
+        "id": "89212165256156",
+        "name": "Gryffondor",
+        "PointsGiven": 0,
+        "PointsTotal": 842703448,
+        "color": "-14653804"
+    }
+}
+```
+{% endswagger-response %}
 {% endswagger %}
