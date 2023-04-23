@@ -7,26 +7,25 @@ import { General } from './general.entity';
 export class GeneralService {
     constructor(@InjectRepository(General) private generalRepository: Repository<General>) {}
 
-    public async updateSeason(season) {
-        const general = await this.generalRepository.find()[0];
-        if (general == null)
+    public async updateSeason(name) {
+        console.log(name);
+        const season = await this.generalRepository.findOneBy({key: 'season'});
+        if (season == null)
         {
-            const gen = new General();
-            gen.season = season['season'];
-            await this.generalRepository.save(gen);
-            return gen;
+            const newSeason = new General();
+            newSeason.key = 'season';
+            newSeason.value = name;
+            await this.generalRepository.save(newSeason);
         }
-        general.season = season['season'];
-        await this.generalRepository.save(general);
-        return general;
+        else
+        {
+            season.value = name;
+            await this.generalRepository.save(season);
+        }
     }
 
     public async getSeason() {
-        const general = await this.generalRepository.find()[0];
-        if (general == null)
-        {
-            return null;
-        }
+        const general = await this.generalRepository.findOneBy({key: 'season'});
         return general;
     }
 }

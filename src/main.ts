@@ -5,6 +5,14 @@ import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  const corsOptions = {
+    origin: '*'
+  };
+
+  const cors = require('cors');
+  
+  app.use(cors(corsOptions));
+  
   await app.listen(5000);
 }
 

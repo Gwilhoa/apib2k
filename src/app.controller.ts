@@ -9,7 +9,7 @@ const token = process.env.TOKEN;
 const ver = process.env.PREFIX;
 console.log(ver);
 export {token, ver};
-@Controller()
+@Controller(ver)
 export class AppController {
   constructor(private readonly appService: AppService) {}
 

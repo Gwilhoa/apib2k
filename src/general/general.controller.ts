@@ -13,7 +13,8 @@ export class GeneralController {
         if (head['token'] != token) {
             return response.status(401).send('Unauthorized');
         }
-        this.generalService.updateSeason(body);
+        console.log(body);
+        this.generalService.updateSeason(body.season);
     }
 
     @Get('season')
@@ -21,6 +22,7 @@ export class GeneralController {
         if (head['token'] != token) {
             return response.status(401).send('Unauthorized');
         }
+        console.log('get season');
         return this.generalService.getSeason();
     }
 

@@ -72,7 +72,7 @@ export class SquadsService {
 	}
 
 	public async updateSquads() {
-		const squad = await this.squadsRepository.find();
+		const squad = await this.squadsRepository.createQueryBuilder("squad").leftJoinAndSelect("squad.members", "members").getMany();
 		for (let i = 0; i < squad.length; i++) {
 			squad[i].PointsGiven = squad[i].PointsGiven;
 			var members = squad[i].members;

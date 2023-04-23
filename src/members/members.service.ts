@@ -77,14 +77,15 @@ export class MembersService {
 
 
 	public async allMembers() {
-		const members = await this.membersRepository.find();
+		const members = await this.membersRepository.createQueryBuilder("members").leftJoinAndSelect("members.squad", "squad").getMany();
 		return members;
 	}
 
 	public async getMemberById(ids){
 		return await this.membersRepository.findOneBy({
 			id: ids.id
-		});
+		})
+
 	}
 
 	public async updateMembers() {
@@ -119,6 +120,8 @@ export class MembersService {
 			id: ids.id
 		});
 		point = parseInt(point);
+		if (point + member.points > 2147483647)
+			return null;
 		member.points += point;
 		await this.membersRepository.save(member);
 		return point;
@@ -171,23 +174,16 @@ export class MembersService {
 
 	public async addAchievement(ids, ac) {
 		console.log(ac);
-		const member = await this.membersRepository.findOneBy({
-			id: ids.id
-		});
+		const member = await this.membersRepository.createQueryBuilder("members")
+		.leftJoinAndSelect("members.achievements", "achievements")
+		.where("members.id = :id", { id: ids.id })
+		.getOne();
+		console.log(member);
 		if (member)
 		{
-			member.achievements.forEach(element => {
-				if (element.id == ac)
-				{
-					throw new BadRequestException('Achievement already exists');
-				}
-			});
-			const ach = this.membersRepository.createQueryBuilder('members');
-			ach.relation(Members, 'achievements').of(member).add(ac);
-			ach.execute();
-			
+			member.achievements.push(ac);
+			await this.membersRepository.save(member);
 		}
-
 		return member;
 	}
 

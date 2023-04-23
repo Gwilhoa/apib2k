@@ -1,10 +1,10 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class General {
-    @PrimaryGeneratedColumn()
-    id: number;
+    @PrimaryColumn()
+    key: string;
 
-    @Column({default: "Bitume2000"})
-    season: string;
+    @Column()
+    value: string;
 }
