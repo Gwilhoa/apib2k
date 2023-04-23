@@ -1,5 +1,5 @@
-# Table of contents
+# Documentation
 
-* [ApiB2K](README.md)
-* [Escouades](escouade.md)
+* [ApiB2K](../)
+* [Escouades](page-1.md)
 * [Membres](membres.md)
