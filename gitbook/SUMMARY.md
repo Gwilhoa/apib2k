@@ -1,6 +1,5 @@
 # Table of contents
 
-* [ApiB2K](../README.md)
-  * [Table of contents](gitbook/SUMMARY.md)
+* [ApiB2K](../)
   * [Escouades](escouade.md)
   * [Membres](membres.md)
