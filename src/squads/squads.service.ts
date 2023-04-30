@@ -2,106 +2,85 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateSquadDTO } from '../dto/create-squads.dto';
-import { SquadsDTO } from '../dto/squads.dto';
 import { Squads } from './squads.entity';
+import { Members } from '../members/members.entity';
 
 @Injectable()
 export class SquadsService {
-	constructor(@InjectRepository(Squads) private squadsRepository: Repository<Squads>) {
-	}
+  constructor(
+    @InjectRepository(Squads) private squadsRepository: Repository<Squads>,
+    @InjectRepository(Members) private membersRepository: Repository<Members>,
+  ) {}
 
-	public async createSquad(createSquadRequest: CreateSquadDTO) {
+  public async removeSquad(id) {
+    const squad = await this.squadsRepository.findOneBy({ id: id });
+    const defaultSquad = await this.squadsRepository.findOneBy({ id: '0' });
+    if (squad == null) {
+      return null;
+    }
+    const members = squad.members;
+    for (const member of members) {
+      member.squad = defaultSquad;
+      await this.membersRepository.save(member);
+    }
+    return await this.squadsRepository.remove(squad);
+  }
 
-		const squad: Squads = new Squads();
-		squad.id = createSquadRequest?.id;
-		squad.name = createSquadRequest?.name;
-		squad.PointsGiven = 0;
-		squad.PointsTotal = 0;
-		squad.color = createSquadRequest?.color;
-		await this.squadsRepository.save(squad);
+  public async getSquads() {
+    return await this.squadsRepository.find();
+  }
 
-		const squadDTO: SquadsDTO = new SquadsDTO();
-		squadDTO.id = squad.id;
-		squadDTO.name = squad.name;
-		squadDTO.PointsGiven = squad.PointsGiven;
-		squadDTO.PointsTotal = squad.PointsTotal;
-		squadDTO.color = squad.color;
+  public async createSquad(createSquadRequest: CreateSquadDTO) {
+    if (
+      await this.squadsRepository.findOneBy({ name: createSquadRequest.id })
+    ) {
+      throw new Error('Squad id already exists');
+    }
+    const squad: Squads = new Squads();
+    squad.id = createSquadRequest.id;
+    squad.name = createSquadRequest.name;
+    squad.PointsGiven = 0;
+    squad.PointsTotal = 0;
+    if (createSquadRequest.color == null) {
+      createSquadRequest.color = '#000000';
+    }
+    squad.color = createSquadRequest.color;
+    return await this.squadsRepository.save(squad);
+  }
 
-		return squadDTO;
-	}
+  public async getSquadById(id) {
+    return await this.squadsRepository.findOneBy({
+      id: id,
+    });
+  }
 
-	public async allSquads() {
-		const squads = await this.squadsRepository.find();
-		return squads;
-	}
+  public async addManualPoints(id, amount) {
+    const squad = await this.getSquadById(id);
+    if (!squad) {
+      return null;
+    }
+    amount = parseInt(amount);
+    squad.PointsGiven += amount;
+    squad.PointsTotal += amount;
+    return await this.squadsRepository.save(squad);
+  }
 
-	public async getSquadById(ids){
-		return await this.squadsRepository.findOneBy({
-			id: ids.id
-		});
-	}
-
-	public async addManualPoints(ids, body){
-		const squad = await this.squadsRepository.findOneBy({
-			id: ids.id
-		});
-		if (!squad) {
-			return null;
-		}
-		body = parseInt(body);
-		squad.PointsGiven += body;
-		squad.PointsTotal += body;
-		await this.squadsRepository.save(squad);
-		return squad;
-	}
-
-	public async removeSquad(ids){
-		const squad = await this.squadsRepository.findOneBy({
-			id: ids.id
-		});
-		if (squad)
-			await this.squadsRepository.remove(squad);
-		return squad;
-	}
-
-	public async getSquadMembers(ids) {
-		const squad = await this.squadsRepository.findOneBy({
-			id: ids.id
-		});
-		squad.members;
-	}
-
-	public async updateSquads() {
-		const squad = await this.squadsRepository.createQueryBuilder("squad").leftJoinAndSelect("squad.members", "members").getMany();
-		for (let i = 0; i < squad.length; i++) {
-			squad[i].PointsGiven = squad[i].PointsGiven;
-			var members = squad[i].members;
-			var nbrs = 0;
-			for (let j = 0; j < members.length; j++) {
-				nbrs += members[j].points;
-			}
-			squad[i].PointsTotal = nbrs;
-			await this.squadsRepository.save(squad[i]);
-		}
-		return true;
-	}
-
-	public async getSquadByMember(id) {
-		const squad = await this.squadsRepository.find();
-		for (let i = 0; i < squad.length; i++) {
-			for (let j = 0; j < squad[i].members.length; j++) {
-				if (squad[i].members[j].id == id) {
-					return squad[i];
-				}
-			}
-		}
-		return squad[0];
-	}
-
-	public async getMembersBySquad(ids) {
-		const squad = await this.squadsRepository.findOneBy({
-			id: ids.id
-		});
-		return squad.members;
-	}
+  public async getMembersBySquad(id) {
+    const squad = await this.squadsRepository
+      .createQueryBuilder('squad')
+      .leftJoinAndSelect('squad.members', 'members')
+      .where('squad.id IN (:...id)', { id: id })
+      .getOne();
+    if (!squad) {
+      return null;
+    }
+    let members = squad.members;
+    if (members == null || members.length == 0) {
+      return [];
+    }
+    members = members.sort((a, b) => {
+      return b.points - a.points;
+    });
+    return members;
+  }
 }

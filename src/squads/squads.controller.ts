@@ -1,115 +1,84 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Headers,
-  Param,
+  Param, Patch,
   Post,
   Res,
-  Response,
+  UseGuards
 } from '@nestjs/common';
-import { setMaxIdleHTTPParsers } from 'http';
-import { threadId } from 'worker_threads';
 import { CreateSquadDTO } from '../dto/create-squads.dto';
 import { SquadsService } from './squads.service';
-import { sleep } from '../main';
 import { ver, token } from '../app.controller';
+import { JwtAuthGuard } from '../authentification/jwt.guard';
 
+@UseGuards(JwtAuthGuard)
 @Controller(ver + 'squads')
 export class SquadsController {
-  constructor(private readonly squadService: SquadsService) {
-    const thread = async () => {
-      while (true) {
-        await sleep(1000);
-        this.squadService.updateSquads();
-      }
-    };
+  constructor(private readonly squadService: SquadsService) {}
 
-    thread();
+  @Delete()
+  public async deleteSquad(@Body() body, @Res() response) {
+    const squad = await this.squadService.removeSquad(body.id);
+    if (squad == null) {
+      return response.status(400).send('Squad not found');
+    }
+    return response.status(200).send(squad);
+  }
+
+  @Get()
+  public async getSquads(@Res() response) {
+    return response.status(200).send(await this.squadService.getSquads());
   }
 
   @Post()
   public async createSquad(
     @Body() createSquadRequest: CreateSquadDTO,
-    @Res({ passthrough: true }) response,
-    @Headers() head,
+    @Res() response,
   ) {
-    if (head['token'] != token) {
-      return response.status(401).send('Unauthorized');
+    let squad;
+    try {
+      squad = await this.squadService.createSquad(createSquadRequest);
+    } catch (e) {
+      return response.status(400).send(e.message);
     }
-    const squad = await this.squadService.createSquad(createSquadRequest);
-    response.status(200);
-    return squad;
+    return response.status(200).send(squad);
   }
-
-  @Get()
-  getSquads(@Res({ passthrough: true }) response, @Headers() head) {
-    if (head['token'] != token) {
-      return response.status(401).send('Unauthorized');
-    }
-    return this.squadService.allSquads();
-  }
-
   @Get('id/:id')
-  getSquadById(
-    @Res({ passthrough: true }) response,
-    @Headers() head,
-    @Param() id,
-  ) {
-    if (head['token'] != token) {
-      return response.status(401).send('Unauthorized');
+  getSquadById(@Res() response, @Param() id) {
+    const squad = this.squadService.getSquadById(id);
+    if (squad == null) {
+      return response.status(400).send('Squad not found');
     }
-    response.status(200);
-    return this.squadService.getSquadById(id);
   }
 
-  @Post('id/:id')
+  @Patch('id/:id')
   addManualPoints(
-    @Res({ passthrough: true }) response,
-    @Headers() head,
+    @Res() response,
     @Param() id,
     @Body() body,
   ) {
-    if (head['token'] != token) {
-      return response.status(401).send('Unauthorized');
+    const points = this.squadService.addManualPoints(id, body.points);
+    if (points == null) {
+      return response.status(400).send('Squad not found');
     }
-    response.status(200);
-    return this.squadService.addManualPoints(id, body.points);
-  }
-
-  @Get('remove/:id')
-  removeSquad(
-    @Res({ passthrough: true }) response,
-    @Headers() head,
-    @Param() id,
-  ) {
-    if (head['token'] != token) {
-      return response.status(401).send('Unauthorized');
-    }
-    return this.squadService.removeSquad(id);
-  }
-
-  @Get('member/:id')
-  getSquadMembers(
-    @Res({ passthrough: true }) response,
-    @Headers() head,
-    @Param() id,
-  ) {
-    if (head['token'] != token) {
-      return response.status(401).send('Unauthorized');
-    }
-    return this.squadService.getSquadByMember(id['id']);
+    return response.status(200).send(points);
   }
 
   @Get('members/:id')
-  getMembers(
-    @Res({ passthrough: true }) response,
-    @Headers() head,
+  async getMembers(
+    @Res() response,
     @Param() id,
   ) {
-    if (head['token'] != token) {
-      return response.status(401).send('Unauthorized');
+    const members = await this.squadService.getMembersBySquad(id);
+    if (members == null) {
+      return response.status(400).send('Squad not found');
     }
-    return this.squadService.getMembersBySquad(id);
+    if (members.length == 0) {
+      return response.status(204).send('No members found');
+    }
+    return response.status(200).send(members);
   }
 }

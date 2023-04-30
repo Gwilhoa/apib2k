@@ -7,10 +7,12 @@ import { SquadsService } from 'src/squads/squads.service';
 import { WaifusModule } from '../waifus/waifus.module';
 import { WaifusService } from '../waifus/waifus.service';
 import { Waifu } from '../waifus/waifus.entity';
+import { ConfigService } from "@nestjs/config";
+import { Squads } from "../squads/squads.entity";
 
 @Module({
-  providers: [MembersService],
+  providers: [MembersService, SquadsService, ConfigService],
   controllers: [MembersController],
-  imports: [TypeOrmModule.forFeature([Members]), TypeOrmModule.forFeature([Waifu])],
+  imports: [TypeOrmModule.forFeature([Members]), TypeOrmModule.forFeature([Waifu]), TypeOrmModule.forFeature([Squads])],
 })
 export class MembersModule {}

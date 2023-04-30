@@ -9,6 +9,8 @@ import { MembersService } from '../members/members.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Members } from '../members/members.entity';
 import { Waifu } from '../waifus/waifus.entity';
+import { SquadsService } from "../squads/squads.service";
+import { Squads } from "../squads/squads.entity";
 
 @Module({
   imports: [
@@ -17,8 +19,15 @@ import { Waifu } from '../waifus/waifus.entity';
     ConfigModule,
     TypeOrmModule.forFeature([Members]),
     TypeOrmModule.forFeature([Waifu]),
+    TypeOrmModule.forFeature([Squads]),
   ],
-  providers: [AuthService, JwtStrategy, MembersService, ConfigService],
+  providers: [
+    AuthService,
+    JwtStrategy,
+    MembersService,
+    ConfigService,
+    SquadsService,
+  ],
   exports: [AuthService],
   controllers: [AuthController],
 })

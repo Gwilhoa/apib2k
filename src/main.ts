@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { Client } from 'discord.js';
+import { setVerified } from "./DiscordEvent/authentification";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -34,7 +35,9 @@ const client = new Client({
 client.login(process.env.DISCORD_TOKEN);
 client.on('interactionCreate', async (interaction) => {
   if (interaction.isButton() && interaction.customId === 'approve-connection') {
-    await interaction.reply('La connexion a été approuvée !');
+    await interaction.channel.send('La connexion a été approuvée !');
+    await interaction.message.delete();
+    await setVerified(interaction.user.id);
   }
 });
 export { client };

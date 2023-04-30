@@ -1,25 +1,21 @@
 import { ver } from '../app.controller';
 import { Body, Controller, Get, Res } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { LoginDto } from '../dto/login.dto';
+import { LoginDto } from '../dto/LoginDto';
 
 @Controller(ver + 'auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Get('/register')
-  async register(@Body() body, @Res() res) {
-    if (body.username == null) {
-      return res.status(400).json({ message_code: 'error' });
+  @Get('/login')
+  async login(@Body() body: LoginDto, @Res() res) {
+    console.log(body);
+    let token = null;
+    try {
+      token = await this.authService.login(body.username, body.password);
+    } catch (e) {
+      return res.status(400).json({ message_code: e.message });
     }
-    const token = await this.authService.register(body.username);
-    if (token == null) {
-      return res.status(409).json({ message_code: 'error' });
-    }
-  }
-
-  @Get()
-  async getToken(@Body() body: LoginDto) {
-    return await this.authService.createToken('test', '1d');
+    return res.status(200).json({ message_code: 'success', token: token });
   }
 }

@@ -19,33 +19,37 @@ import { waifusMembers } from '../waifus-members/waifus-members.entity';
 import { Waifu } from '../waifus/waifus.entity';
 import { WaifusService } from '../waifus/waifus.service';
 import { Members } from './members.entity';
+import { CreateSquadDTO } from "../dto/create-squads.dto";
 
 @Injectable()
 export class MembersService {
   constructor(
     @InjectRepository(Members) private membersRepository: Repository<Members>,
     @InjectRepository(Waifu) private waifuRepository: Repository<Waifu>,
+    readonly squadService: SquadsService,
   ) {}
 
-  public async createMember(createMemberRequest: CreateMembersDTO) {
+  public async createMember(createMembersDTO: CreateMembersDTO) {
     const member: Members = new Members();
-    member.id = createMemberRequest?.id;
-    member.name = createMemberRequest?.name;
+    member.id = createMembersDTO.id;
+    member.name = createMembersDTO.name;
     member.points = 0;
     member.coins = 0;
     member.memevotes = 2;
-    const sq = new Squads();
-    sq.id = createMemberRequest?.squadid;
+    let sq = await this.squadService.getSquadById(createMembersDTO.squadid);
+    if (!sq) {
+      sq = await this.squadService.getSquadById('0');
+      if (sq == null) {
+        const defaultSquad = new CreateSquadDTO();
+        defaultSquad.id = '0';
+        defaultSquad.name = 'Default';
+        defaultSquad.color = '#000000';
+        await this.squadService.createSquad(defaultSquad);
+      }
+    }
     member.squad = sq;
-    await this.membersRepository.save(member);
-    const memberDTO: MembersDTO = new MembersDTO();
-    memberDTO.id = member.id;
-    memberDTO.name = member.name;
-    memberDTO.points = member.points;
-    memberDTO.squad = member.squad;
-    memberDTO.coins = member.coins;
-
-    return memberDTO;
+    const mem = await this.membersRepository.save(member);
+    return mem;
   }
 
   public async addbestmeme(ids) {
@@ -75,9 +79,9 @@ export class MembersService {
     return members;
   }
 
-  public async getMemberById(ids) {
+  public async getMemberById(id) {
     return await this.membersRepository.findOneBy({
-      id: ids.id,
+      id: id,
     });
   }
 
