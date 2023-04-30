@@ -83,4 +83,15 @@ export class SquadsService {
     });
     return members;
   }
+
+  getSquadsByToken(user) {
+    const member = this.membersRepository
+      .createQueryBuilder('members')
+      .leftJoinAndSelect('members.squad', 'squad')
+      .where('members.id IN (:...id)', { id: user })
+      .getOne();
+    if (member == null) {
+      return null;
+    }
+  }
 }

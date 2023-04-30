@@ -13,6 +13,7 @@ import { CreateSquadDTO } from '../dto/create-squads.dto';
 import { SquadsService } from './squads.service';
 import { ver, token } from '../app.controller';
 import { JwtAuthGuard } from '../authentification/jwt.guard';
+import { User } from "../authentification/auth.decorator";
 
 @UseGuards(JwtAuthGuard)
 @Controller(ver + 'squads')
@@ -52,6 +53,11 @@ export class SquadsController {
     if (squad == null) {
       return response.status(400).send('Squad not found');
     }
+  }
+
+  @Get('id')
+  getSquadByToken(@Res() response, @User() user) {
+    this.squadService.getSquadsByToken(user);
   }
 
   @Patch('id/:id')
