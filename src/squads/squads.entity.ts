@@ -1,11 +1,5 @@
 import { Members } from 'src/members/members.entity';
-import {
-  Entity,
-  PrimaryColumn,
-  Column,
-  OneToMany,
-  JoinColumn,
-} from 'typeorm';
+import { Entity, PrimaryColumn, Column, OneToMany, JoinColumn } from 'typeorm';
 
 @Entity()
 export class Squads {

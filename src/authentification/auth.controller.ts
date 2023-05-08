@@ -9,7 +9,6 @@ export class AuthController {
 
   @Get('/login')
   async login(@Body() body: LoginDto, @Res() res) {
-    console.log(body);
     let token = null;
     try {
       token = await this.authService.login(body.username, body.password);

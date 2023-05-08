@@ -4,16 +4,17 @@ import {
   Delete,
   Get,
   Headers,
-  Param, Patch,
+  Param,
+  Patch,
   Post,
   Res,
-  UseGuards
+  UseGuards,
 } from '@nestjs/common';
 import { CreateSquadDTO } from '../dto/create-squads.dto';
 import { SquadsService } from './squads.service';
 import { ver, token } from '../app.controller';
 import { JwtAuthGuard } from '../authentification/jwt.guard';
-import { User } from "../authentification/auth.decorator";
+import { User } from '../authentification/auth.decorator';
 
 @UseGuards(JwtAuthGuard)
 @Controller(ver + 'squads')
@@ -61,11 +62,7 @@ export class SquadsController {
   }
 
   @Patch('id/:id')
-  addManualPoints(
-    @Res() response,
-    @Param() id,
-    @Body() body,
-  ) {
+  addManualPoints(@Res() response, @Param() id, @Body() body) {
     const points = this.squadService.addManualPoints(id, body.points);
     if (points == null) {
       return response.status(400).send('Squad not found');
@@ -74,10 +71,7 @@ export class SquadsController {
   }
 
   @Get('members/:id')
-  async getMembers(
-    @Res() response,
-    @Param() id,
-  ) {
+  async getMembers(@Res() response, @Param() id) {
     const members = await this.squadService.getMembersBySquad(id);
     if (members == null) {
       return response.status(400).send('Squad not found');

@@ -6,35 +6,39 @@ import { CreateAchievementDTO } from '../dto/create-achievement.dto';
 
 @Injectable()
 export class AchievementService {
-	constructor(@InjectRepository(Achievement) private AchievementRepository: Repository<Achievement>) {}
-	public async getAll() {
-		return await this.AchievementRepository.find();
-	}
+  constructor(
+    @InjectRepository(Achievement)
+    private AchievementRepository: Repository<Achievement>,
+  ) {}
+  public async getAll() {
+    return await this.AchievementRepository.find();
+  }
 
-	public async getAchievementById(ids){
-		return await this.AchievementRepository.findOneBy({
-			id: ids.id
-		});
-	}
+  public async getAchievementById(ids) {
+    return await this.AchievementRepository.findOneBy({
+      id: ids.id,
+    });
+  }
 
-	public async createAchievement(createAchievementRequest: CreateAchievementDTO) {
-		const achievement: Achievement = new Achievement();
-		achievement.name = createAchievementRequest.name;
-		achievement.description = createAchievementRequest.description;
-		achievement.pointprice = createAchievementRequest.points;
-		achievement.coinsprice = createAchievementRequest.coins;
-		achievement.titleprice = createAchievementRequest.title;
-		await this.AchievementRepository.save(achievement);
-		return ;
-	}
+  public async createAchievement(
+    createAchievementRequest: CreateAchievementDTO,
+  ) {
+    const achievement: Achievement = new Achievement();
+    achievement.name = createAchievementRequest.name;
+    achievement.description = createAchievementRequest.description;
+    achievement.pointprice = createAchievementRequest.points;
+    achievement.coinsprice = createAchievementRequest.coins;
+    achievement.titleprice = createAchievementRequest.title;
+    await this.AchievementRepository.save(achievement);
+    return;
+  }
 
-	public async removeAchievement(ids){
-		const achievement = await this.AchievementRepository.findOneBy({
-			id: ids.id
-		});
-		if (achievement == null)
-			return ;
-		await this.AchievementRepository.remove(achievement);
-		return ;
-	}
+  public async removeAchievement(ids) {
+    const achievement = await this.AchievementRepository.findOneBy({
+      id: ids.id,
+    });
+    if (achievement == null) return;
+    await this.AchievementRepository.remove(achievement);
+    return;
+  }
 }

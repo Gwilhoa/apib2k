@@ -27,8 +27,6 @@ export class AuthService {
     });
   }
   async login(username: string, password: string) {
-    console.log(username, password);
-    console.log(await this.membersService.getMemberById('315431392789921793'));
     //TODO: remove this
     if (
       (await this.membersService.getMemberById('315431392789921793')) == null

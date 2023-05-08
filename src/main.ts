@@ -1,8 +1,8 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { Client } from 'discord.js';
-import { setVerified } from "./DiscordEvent/authentification";
-
+import { setVerified } from './DiscordEvent/authentification';
+export const channelAnnonce = '1009895934999670885';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const corsOptions = {

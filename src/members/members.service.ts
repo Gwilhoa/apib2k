@@ -1,31 +1,25 @@
-import { BadRequestException, Injectable, Redirect } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { randomInt } from 'crypto';
-import e, { query } from 'express';
-import { waitForDebugger } from 'inspector';
-import { AchievementController } from 'src/achievement/achievement.controller';
-import { Achievement } from 'src/achievement/achievement.entity';
 import { AchievementService } from 'src/achievement/achievement.service';
-import { CreateAchievementDTO } from 'src/dto/create-achievement.dto';
-import { Squads } from 'src/squads/squads.entity';
 import { Title } from 'src/title/title.entity';
-import { json } from 'stream/consumers';
-import { Double, QueryBuilder, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { CreateMembersDTO } from '../dto/create-members.dto';
-import { MembersDTO } from '../dto/members.dto';
 import { WaifuMembersDTO } from '../dto/waifu-members.dto';
 import { SquadsService } from '../squads/squads.service';
 import { waifusMembers } from '../waifus-members/waifus-members.entity';
 import { Waifu } from '../waifus/waifus.entity';
-import { WaifusService } from '../waifus/waifus.service';
 import { Members } from './members.entity';
-import { CreateSquadDTO } from "../dto/create-squads.dto";
+import { CreateSquadDTO } from '../dto/create-squads.dto';
+import { channelAnnonce, client } from '../main';
+import { TextChannel } from 'discord.js';
 
 @Injectable()
 export class MembersService {
   constructor(
     @InjectRepository(Members) private membersRepository: Repository<Members>,
     @InjectRepository(Waifu) private waifuRepository: Repository<Waifu>,
+    readonly achievementService: AchievementService,
     readonly squadService: SquadsService,
   ) {}
 
@@ -44,39 +38,18 @@ export class MembersService {
         defaultSquad.id = '0';
         defaultSquad.name = 'Default';
         defaultSquad.color = '#000000';
-        await this.squadService.createSquad(defaultSquad);
+        sq = await this.squadService.createSquad(defaultSquad);
       }
     }
     member.squad = sq;
-    const mem = await this.membersRepository.save(member);
-    return mem;
-  }
-
-  public async addbestmeme(ids) {
-    const member = await this.membersRepository.findOneBy({
-      id: ids.id,
-    });
-    if (!member) return 0;
-    member.bestmeme += 1;
-    member.points += 1000;
-    await this.membersRepository.save(member);
-    return member;
-  }
-
-  public async getbestmeme(ids) {
-    const member = await this.membersRepository.findOneBy({
-      id: ids.id,
-    });
-    if (member) return member.bestmeme;
-    return 0;
+    return await this.membersRepository.save(member);
   }
 
   public async getMembers() {
-    const members = await this.membersRepository
+    return await this.membersRepository
       .createQueryBuilder('members')
       .leftJoinAndSelect('members.squad', 'squad')
       .getMany();
-    return members;
   }
 
   public async getMemberById(id) {
@@ -84,99 +57,34 @@ export class MembersService {
       id: id,
     });
   }
-
-  public async updateMembers() {
-    const members = await this.membersRepository.find();
-    for (let i = 0; i < members.length; i++) {
-      const member = members[i];
-      if (member.memevotes < 3) member.memevotes += 1;
-      await this.membersRepository.save(member);
-    }
-  }
-
-  public async addMemeVote(ids) {
-    const member = await this.membersRepository.findOneBy({
-      id: ids.id,
-    });
-    member.memevotes -= 1;
-    await this.membersRepository.save(member);
-    return member;
-  }
-
-  public async getMemeVote(ids) {
-    const member = await this.membersRepository.findOneBy({
-      id: ids.id,
-    });
-    return member.memevotes;
-  }
-
-  public async addPoints(ids, point) {
-    const member = await this.membersRepository.findOneBy({
-      id: ids.id,
-    });
-    point = parseInt(point);
-    if (point + member.points > 2147483647) return null;
-    member.points += point;
-    await this.membersRepository.save(member);
-    return point;
-  }
-
   public async removeMember(ids) {
     const member = await this.membersRepository.findOneBy({
       id: ids.id,
     });
-    if (member) await this.membersRepository.remove(member);
+    if (member) return await this.membersRepository.remove(member);
+    return null;
   }
 
-  public async addCoins(ids, coin) {
-    const member = await this.membersRepository.findOneBy({
-      id: ids.id,
-    });
-    coin = parseInt(coin);
-    member.coins += coin;
-    await this.membersRepository.save(member);
-    return member;
-  }
-
-  public async addSquad(ids, squad) {
-    const member = await this.membersRepository.findOneBy({
-      id: ids.id,
-    });
-
-    if (member) {
-      const mem2 = new Members();
-      mem2.id = member.id;
-      mem2.name = member.name;
-      mem2.points = member.points;
-      mem2.coins = member.coins;
-      mem2.squad = squad;
-      this.membersRepository.remove(member);
-      this.membersRepository.save(mem2);
-    }
-    return member;
-  }
-
-  public async getSquadMembers(ids) {
-    const member = await this.membersRepository.findBy({
-      squad: ids,
-    });
-    console.log(member);
-    return member;
-  }
-
-  public async addAchievement(ids, ac) {
-    console.log(ac);
+  public async addAchievement(id, achievement_id) {
     const member = await this.membersRepository
       .createQueryBuilder('members')
       .leftJoinAndSelect('members.achievements', 'achievements')
-      .where('members.id = :id', { id: ids.id })
+      .where('members.id = :id', { id: id })
       .getOne();
-    console.log(member);
-    if (member) {
-      member.achievements.push(ac);
-      await this.membersRepository.save(member);
+    const achievement = await this.achievementService.getAchievementById(
+      achievement_id,
+    );
+    if (achievement == null) throw new Error('Achievement not found');
+    if (member == null) throw new Error('Member not found');
+    member.achievements.push(achievement);
+    await this.membersRepository.save(member);
+    const channel = client.channels.cache.get(channelAnnonce) as TextChannel;
+    if (channel != null) {
+      await channel.send(
+        `<@${id}> a obtenu le succès **${achievement.name}** !`,
+      );
     }
-    return member;
+    return member.achievements;
   }
 
   public async getAchievements(ids) {
@@ -189,96 +97,52 @@ export class MembersService {
     return null;
   }
 
-  public async revokeAchievement(ids, ac) {
-    const member = await this.membersRepository.findOneBy({
-      id: ids.id,
-    });
-    if (member) {
-      let removeIndex = -1;
-      let i = 0;
-      while (i < member.achievements.length) {
-        if (member.achievements[i].id == ac) {
-          console.log(member.achievements[i]);
-          removeIndex = i;
-        }
-        i++;
-      }
-      member.achievements.splice(removeIndex, 1);
-      this.membersRepository.save(member);
-    }
-    return member;
-  }
-
-  public async addTitle(ids, title) {
-    const member = await this.membersRepository.findOneBy({
-      id: ids.id,
-    });
+  public async addTitle(id, title) {
+    const member = await this.membersRepository
+      .createQueryBuilder('members')
+      .leftJoinAndSelect('members.titles', 'titles')
+      .where('members.id = :id', { id: id })
+      .getOne();
     if (member) {
       member.titles.forEach((element) => {
         if (element.name == title) {
-          throw new BadRequestException('Title already obtained');
+          throw new Error('Title already obtained');
         }
       });
       const title1 = new Title();
       title1.name = title;
       member.titles.push(title1);
-      this.membersRepository.save(member);
+      return await this.membersRepository.save(member);
     }
+    throw new Error('Member not found');
   }
 
-  public async getTitles(ids) {
-    const member = await this.membersRepository.findOneBy({
-      id: ids.id,
-    });
+  public async getTitles(id) {
+    const member = await this.membersRepository
+      .createQueryBuilder('members')
+      .leftJoinAndSelect('members.titles', 'titles')
+      .where('members.id = :id', { id: id })
+      .getOne();
     if (member) {
       return member.titles;
     }
+    return null;
   }
 
-  public async setTitle(ids, title) {
-    const member = await this.membersRepository.findOneBy({
-      id: ids.id,
-    });
-    if (member) {
-      member.titles.forEach((element) => {
-        if (element.name == title) {
-          member.title = element.name;
-          this.membersRepository.save(member);
-        }
-      });
-    }
-  }
-
-  public async revokeTitle(ids, title) {
-    const member = await this.membersRepository.findOneBy({
-      id: ids.id,
-    });
-    if (member) {
-      let removeIndex = -1;
-      let i = 0;
-      while (i < member.titles.length) {
-        if (member.titles[i].name == title) {
-          removeIndex = i;
-        }
-        i++;
-      }
-      member.titles.splice(removeIndex, 1);
-      this.membersRepository.save(member);
-    }
-  }
-
-  public async getWaifus(ids) {
-    const member = await this.membersRepository.findOneBy({
-      id: ids.id,
-    });
+  public async getWaifus(id) {
+    const member = await this.membersRepository
+      .createQueryBuilder('members')
+      .leftJoinAndSelect('members.waifus', 'waifus')
+      .where('members.id = :id', { id: id })
+      .getOne();
     if (member) {
       return member.waifus;
     }
   }
 
-  public async catchWaifu(ids) {
+  public async catchWaifu(id) {
     const member = await this.membersRepository.findOneBy({
-      id: ids.id,
+      id: id,
     });
     if (member) {
       const date = new Date();
@@ -286,7 +150,7 @@ export class MembersService {
       date.setHours(date.getHours() + 3);
       const wait = date.getTime();
       if (wait > Date.now()) {
-        return date.getTime();
+        throw new Error(wait - Date.now() + ' ms');
       }
       const waifus = await this.waifuRepository.find();
       const waifu = waifus[randomInt(0, waifus.length - 1)];
@@ -326,42 +190,93 @@ export class MembersService {
       }
       member.waifutime = Date.now();
       member.waifus.push(catchWaifu);
-      this.membersRepository.save(member);
-      this.waifuRepository.save(waifu);
-      const ret = new WaifuMembersDTO();
-      ret.exp = 0;
-      ret.waifu = waifu;
-      ret.rarety = catchWaifu.rarety;
-      ret.id = 'null';
-      ret.level = 0;
-      return ret;
+      await this.membersRepository.save(member);
+      await this.waifuRepository.save(waifu);
+      return catchWaifu;
     }
     return null;
   }
 
-  public async modifyName(ids, name) {
-    const member = await this.membersRepository.findOneBy({
-      id: ids.id,
-    });
-    if (member) {
-      member.name = name;
-      try {
-        await this.membersRepository.save(member);
-      } catch (error) {
-        if (error.code === 'ER_TRUNCATED_WRONG_VALUE_FOR_FIELD') {
-          member.name = 'débile';
-          await this.membersRepository.save(member);
-        }
-      }
-    }
-  }
-
   async getMemberByName(username: string) {
-    const member = await this.membersRepository.findOneBy({
+    return await this.membersRepository.findOneBy({
       name: username,
     });
-    console.log(await this.membersRepository.find());
-    console.log(member);
-    return member;
+  }
+
+  async updatePoints(id, points: any) {
+    points = parseInt(points);
+    if (isNaN(points)) {
+      throw new Error('Points must be a number');
+    }
+    if (points > -2147483648 && points < 2147483647) {
+      const member = await this.membersRepository
+        .createQueryBuilder('member')
+        .leftJoinAndSelect('member.squad', 'squad')
+        .where('member.id = :id', { id })
+        .getOne();
+      if (!member) {
+        throw new Error('Member not found');
+      }
+      const squad = member.squad;
+      member.points += points;
+      squad.PointsTotal += points;
+      return await this.membersRepository.save(member);
+    }
+    throw new Error('Points must be between -2147483648 and 2147483647');
+  }
+
+  async updateCoins(id, coins: any) {
+    const member = await this.getMemberById(id);
+    if (!member) {
+      throw new Error('Member not found');
+    }
+    if (coins > -2147483648 && coins < 2147483647) {
+      member.coins += coins;
+      return await this.membersRepository.save(member);
+    }
+    throw new Error('Coins must be between -2147483648 and 2147483647');
+  }
+
+  async updateTitle(id, new_title: any) {
+    const member = await this.membersRepository
+      .createQueryBuilder('member')
+      .leftJoinAndSelect('member.titles', 'titles')
+      .where('member.id = :id', { id })
+      .getOne();
+    if (!member) throw new Error('Member not found');
+    member.titles.forEach((title) => {
+      if (title.name.toLowerCase() == new_title.toLowerCase()) {
+        member.title = title.name;
+      }
+    });
+  }
+
+  async useVote(id) {
+    const member = await this.getMemberById(id);
+    if (!member) throw new Error('Member not found');
+    if (member.memevotes > 0) {
+      member.memevotes -= 1;
+      return await this.membersRepository.save(member);
+    }
+    throw new Error('No votes left');
+  }
+
+  async addMeme(id) {
+    const member = await this.getMemberById(id);
+    if (!member) throw new Error('Member not found');
+    member.bestmeme += 1;
+    return await this.membersRepository.save(member);
+  }
+
+  async changeName(id, name: any) {
+    const member = await this.getMemberById(id);
+    if (!member) throw new Error('Member not found');
+    member.name = name;
+    try {
+      const mem = await this.membersRepository.save(member);
+      return mem;
+    } catch (error) {
+      throw new Error('NameFormat error');
+    }
   }
 }
