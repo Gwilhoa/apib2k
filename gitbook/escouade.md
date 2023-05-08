@@ -61,8 +61,6 @@ key_access
     }
 ]
 ```
-
-
 {% endswagger-response %}
 
 {% swagger-response status="401: Unauthorized" description="bad authorization" %}
@@ -80,7 +78,7 @@ key_access
 {% endswagger-parameter %}
 
 {% swagger-parameter in="body" name="id" type="String" required="true" %}
-identifiants de l'ecouade :&#x20;
+identifiants de l'ecouade :
 
 lié a un role discord
 {% endswagger-parameter %}
@@ -89,7 +87,7 @@ lié a un role discord
 nom de l'escouade
 {% endswagger-parameter %}
 
-{% swagger-parameter in="body" name="color" type="String" %}
+{% swagger-parameter in="body" name="color" type="String" required="false" %}
 couleur de l'escouade (défaut : noir)
 {% endswagger-parameter %}
 
@@ -150,6 +148,28 @@ unauthorized
 {% endswagger-response %}
 {% endswagger %}
 
+{% swagger method="get" path="/squads/id" baseUrl="https://api.bitume2000.fr/v2" summary="Récupérer l'escouade de la personne concernée" %}
+{% swagger-description %}
+
+{% endswagger-description %}
+
+{% swagger-parameter in="header" name="authorization" required="true" %}
+access_token
+{% endswagger-parameter %}
+
+{% swagger-response status="200: OK" description="" %}
+
+{% endswagger-response %}
+
+{% swagger-response status="204: No Content" description="" %}
+
+{% endswagger-response %}
+
+{% swagger-response status="401: Unauthorized" description="" %}
+
+{% endswagger-response %}
+{% endswagger %}
+
 {% swagger method="patch" path="/squads/id/{id}" baseUrl="https://api.bitume2000.fr/v2" summary="donner / enlever des points manuel à une escouade" %}
 {% swagger-description %}
 
@@ -174,8 +194,6 @@ adding number
     "members":[]
 }
 ```
-
-
 {% endswagger-response %}
 
 {% swagger-response status="204: No Content" description="" %}

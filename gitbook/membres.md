@@ -90,7 +90,25 @@ unauthorized
 {% endswagger-response %}
 {% endswagger %}
 
-{% swagger method="delete" path="/members" baseUrl="https://api.bitume2000.fr/v2" summary="supprimer un membre du serveur" %}
+{% swagger method="get" path="/id" baseUrl="https://api.bitume2000.fr/v2" summary="récupérer le user lié à la clé" %}
+{% swagger-description %}
+
+{% endswagger-description %}
+
+{% swagger-parameter in="header" name="authorization" %}
+access_token
+{% endswagger-parameter %}
+
+{% swagger-response status="200: OK" description="" %}
+
+{% endswagger-response %}
+
+{% swagger-response status="401: Unauthorized" description="" %}
+
+{% endswagger-response %}
+{% endswagger %}
+
+{% swagger method="delete" path="/members/id/{id}" baseUrl="https://api.bitume2000.fr/v2" summary="supprimer un membre du serveur" %}
 {% swagger-description %}
 
 {% endswagger-description %}
@@ -152,7 +170,7 @@ unauthorized
 {% endswagger-response %}
 {% endswagger %}
 
-{% swagger method="get" path="/members/achievement/{id}" baseUrl="https://api.bitume2000.fr/v2" summary="récuperer les succès gagné par un membre" %}
+{% swagger method="get" path="/members/achievements/{id}" baseUrl="https://api.bitume2000.fr/v2" summary="récuperer les succès gagné par un membre" %}
 {% swagger-description %}
 
 {% endswagger-description %}
@@ -191,7 +209,7 @@ unauthorized
 {% endswagger-response %}
 {% endswagger %}
 
-{% swagger method="post" path="/members/achievement/{id}" baseUrl="https://api.bitume2000.fr/v2" summary="ajouter un succès à une personne" %}
+{% swagger method="post" path="/members/achievements/{id}" baseUrl="https://api.bitume2000.fr/v2" summary="ajouter un succès à une personne" %}
 {% swagger-description %}
 
 {% endswagger-description %}
@@ -200,8 +218,8 @@ unauthorized
 
 {% endswagger-parameter %}
 
-{% swagger-parameter in="body" name="id" required="true" %}
-achievement_id
+{% swagger-parameter in="body" name="achievement_id" required="true" %}
+
 {% endswagger-parameter %}
 
 {% swagger-response status="200: OK" description="" %}
@@ -383,6 +401,24 @@ access_token
 {% endswagger-response %}
 {% endswagger %}
 
+{% swagger method="patch" path="/members/title/{id}" baseUrl="https://api.bitume2000.fr/v2" summary="définir son titre principal" %}
+{% swagger-description %}
+
+{% endswagger-description %}
+
+{% swagger-parameter in="header" name="authorization" %}
+access_token
+{% endswagger-parameter %}
+
+{% swagger-response status="200: OK" description="" %}
+
+{% endswagger-response %}
+
+{% swagger-response status="401: Unauthorized" description="" %}
+
+{% endswagger-response %}
+{% endswagger %}
+
 {% swagger method="patch" path="/members/memevote/{id}" baseUrl="https://api.bitume2000.fr/v2" summary="utiliser un point super vote" %}
 {% swagger-description %}
 
@@ -487,7 +523,7 @@ access_token
 {% endswagger-response %}
 {% endswagger %}
 
-{% swagger method="patch" path="/members/waifus/{id}" baseUrl="https://api.bitume2000.fr/v2" summary="attraper une waifu " %}
+{% swagger method="post" path="/members/waifus/{id}" baseUrl="https://api.bitume2000.fr/v2" summary="attraper une waifu " %}
 {% swagger-description %}
 
 {% endswagger-description %}
@@ -521,6 +557,28 @@ access_token
 {% endswagger-response %}
 
 {% swagger-response status="425: Too Early" description="" %}
+
+{% endswagger-response %}
+{% endswagger %}
+
+{% swagger method="get" path="/members/waifus/{id}" baseUrl="https://api.bitume2000.fr/v2" summary="récupérer les waifus d'une personne" %}
+{% swagger-description %}
+
+{% endswagger-description %}
+
+{% swagger-parameter in="header" name="authorization" required="true" %}
+access_token
+{% endswagger-parameter %}
+
+{% swagger-response status="200: OK" description="" %}
+
+{% endswagger-response %}
+
+{% swagger-response status="400: Bad Request" description="" %}
+
+{% endswagger-response %}
+
+{% swagger-response status="401: Unauthorized" description="" %}
 
 {% endswagger-response %}
 {% endswagger %}
@@ -573,7 +631,7 @@ access_token
 {% endswagger-response %}
 {% endswagger %}
 
-{% swagger method="patch" path="/members/id/{id}" baseUrl="https://api.bitume2000.fr/v2" summary="changer le nom d'un member" %}
+{% swagger method="patch" path="/members/name/{id}" baseUrl="https://api.bitume2000.fr/v2" summary="changer le nom d'un member" %}
 {% swagger-description %}
 
 {% endswagger-description %}
