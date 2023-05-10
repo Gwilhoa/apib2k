@@ -36,6 +36,9 @@ export class SquadsService {
     ) {
       throw new Error('Squad id already exists');
     }
+    if (createSquadRequest.name == null) {
+      throw new Error('Name is null');
+    }
     const squad: Squads = new Squads();
     squad.id = createSquadRequest.id;
     squad.name = createSquadRequest.name;
@@ -84,8 +87,8 @@ export class SquadsService {
     return members;
   }
 
-  getSquadsByToken(user) {
-    const member = this.membersRepository
+  async getSquadsByToken(user) {
+    const member = await this.membersRepository
       .createQueryBuilder('members')
       .leftJoinAndSelect('members.squad', 'squad')
       .where('members.id IN (:...id)', { id: user })
@@ -93,5 +96,6 @@ export class SquadsService {
     if (member == null) {
       return null;
     }
+    return member.squad;
   }
 }

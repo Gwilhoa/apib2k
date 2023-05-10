@@ -4,6 +4,6 @@ import { WaifusMembersController } from './waifus-members.controller';
 
 @Module({
   providers: [WaifusMembersService],
-  controllers: [WaifusMembersController]
+  controllers: [WaifusMembersController],
 })
 export class WaifusMembersModule {}

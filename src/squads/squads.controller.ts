@@ -58,7 +58,7 @@ export class SquadsController {
 
   @Get('id')
   getSquadByToken(@Res() response, @User() user) {
-    this.squadService.getSquadsByToken(user);
+    response.status(200).json(this.squadService.getSquadsByToken(user));
   }
 
   @Patch('id/:id')

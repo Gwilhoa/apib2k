@@ -20,13 +20,13 @@ export class Achievement {
   description: string;
 
   @Column({ nullable: false, default: 0 })
-  coinsprice: number;
+  coins: number;
 
   @Column({ nullable: false, default: 0 })
-  pointprice: number;
+  points: number;
 
   @Column({ nullable: true })
-  titleprice: string;
+  title: string;
 
   @ManyToMany((type) => Members, (members) => members.achievements)
   @JoinTable({

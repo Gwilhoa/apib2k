@@ -1,9 +1,18 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Res, UseGuards } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
 import { MembersService } from './members.service';
 import { ver } from '../app.controller';
 import { JwtAuthGuard } from '../authentification/jwt.guard';
 import { User } from '../authentification/auth.decorator';
-import * as path from "path";
 
 @UseGuards(JwtAuthGuard)
 @Controller(ver + 'members')

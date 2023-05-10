@@ -4,7 +4,6 @@ import { WaifusController } from './waifus.controller';
 import { Waifu } from './waifus.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-
 @Module({
   providers: [WaifusService],
   controllers: [WaifusController],

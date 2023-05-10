@@ -10,7 +10,7 @@ export class AchievementService {
     @InjectRepository(Achievement)
     private AchievementRepository: Repository<Achievement>,
   ) {}
-  public async getAll() {
+  public async getAchievements() {
     return await this.AchievementRepository.find();
   }
 
@@ -20,25 +20,28 @@ export class AchievementService {
     });
   }
 
-  public async createAchievement(
-    createAchievementRequest: CreateAchievementDTO,
-  ) {
+  public async createAchievement(achievementDTO: CreateAchievementDTO) {
+    if (achievementDTO.name == null) throw new Error('Name is null');
+    if (achievementDTO.description == null)
+      throw new Error('Description is null');
+    if (achievementDTO.points == null) achievementDTO.points = 0;
+    if (achievementDTO.coins == null) achievementDTO.coins = 0;
+    if (achievementDTO.title == null) achievementDTO.title = null;
     const achievement: Achievement = new Achievement();
-    achievement.name = createAchievementRequest.name;
-    achievement.description = createAchievementRequest.description;
-    achievement.pointprice = createAchievementRequest.points;
-    achievement.coinsprice = createAchievementRequest.coins;
-    achievement.titleprice = createAchievementRequest.title;
-    await this.AchievementRepository.save(achievement);
-    return;
+    achievement.name = achievementDTO.name;
+    achievement.description = achievementDTO.description;
+    achievement.points = achievementDTO.points;
+    achievement.coins = achievementDTO.coins;
+    achievement.title = achievementDTO.title;
+    //TODO: changer les noms dans la database
+    return await this.AchievementRepository.save(achievement);
   }
 
-  public async removeAchievement(ids) {
+  public async removeAchievement(id) {
     const achievement = await this.AchievementRepository.findOneBy({
-      id: ids.id,
+      id: id,
     });
-    if (achievement == null) return;
-    await this.AchievementRepository.remove(achievement);
-    return;
+    if (achievement == null) return null;
+    return await this.AchievementRepository.remove(achievement);
   }
 }

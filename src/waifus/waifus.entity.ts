@@ -1,6 +1,6 @@
-import { Entity, ManyToOne } from "typeorm";
-import { Column, PrimaryGeneratedColumn } from "typeorm";
-import { waifusMembers } from "../waifus-members/waifus-members.entity";
+import { Entity, ManyToOne } from 'typeorm';
+import { Column, PrimaryGeneratedColumn } from 'typeorm';
+import { waifusMembers } from '../waifus-members/waifus-members.entity';
 
 @Entity()
 export class Waifu {
@@ -10,7 +10,7 @@ export class Waifu {
   @Column()
   name: string;
 
-  @Column({length: 2000})
+  @Column({ length: 2000 })
   description: string;
 
   @Column()
@@ -24,5 +24,4 @@ export class Waifu {
 
   @Column()
   legendary: number;
-
 }

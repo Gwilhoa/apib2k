@@ -11,7 +11,7 @@ import { WaifusMembersModule } from './waifus-members/waifus-members.module';
 import { WaifusModule } from './waifus/waifus.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { GeneralModule } from './general/general.module';
-import { AuthModule } from "./authentification/auth.module";
+import { AuthModule } from './authentification/auth.module';
 
 @Module({
   imports: [

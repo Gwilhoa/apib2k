@@ -1,40 +1,66 @@
-import { Body, Controller, Get, Headers, Param, Post, Res } from '@nestjs/common';
-import { ver, token } from '../app.controller';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
+import { ver } from '../app.controller';
 import { AchievementService } from './achievement.service';
+import { JwtAuthGuard } from '../authentification/jwt.guard';
+import { CreateAchievementDTO } from '../dto/create-achievement.dto';
 
-@Controller (ver +'achievement')
+@UseGuards(JwtAuthGuard)
+@Controller(ver + 'achievement')
 export class AchievementController {
-	constructor(private readonly achievementService: AchievementService) {}
+  constructor(private readonly achievementService: AchievementService) {}
 
-	@Get()
-	getAll(@Res({ passthrough: true }) response, @Headers() head) {
-		if (head['token'] != token) {
-			return response.status(401).send('Unauthorized');
-		}
-		return this.achievementService.getAll();
-	}
+  @Get()
+  async getAchievements(@Res() response) {
+    const achievements = await this.achievementService.getAchievements();
+    if (achievements == null) {
+      return response
+        .status(204)
+        .json({ message_code: 'no achievements found' });
+    }
+    return response.status(200).json(achievements);
+  }
 
-	@Get('/id/:id')
-	getAchievementById(@Res({ passthrough: true }) response, @Headers() head, @Param() id) {
-		if (head['token'] != token) {
-			return response.status(401).send('Unauthorized');
-		}
-		return this.achievementService.getAchievementById(id);
-	}
+  @Get('/id/:id')
+  async getAchievementById(@Res() response, @Param() id) {
+    const achievement = await this.achievementService.getAchievementById(id);
+    if (achievement == null) {
+      return response
+        .status(204)
+        .json({ message_code: 'achievement not found' });
+    }
+    return response.status(200).json(achievement);
+  }
 
-	@Post()
-	createAchievement(@Res({ passthrough: true }) response, @Headers() head, @Body() body) {
-		if (head['token'] != token) {
-			return response.status(401).send('Unauthorized');
-		}
-		return this.achievementService.createAchievement(body);
-	}
+  @Post()
+  async createAchievement(@Res() response, @Body() body: CreateAchievementDTO) {
+    let ret;
+    try {
+      ret = await this.achievementService.createAchievement(body);
+    } catch (e) {
+      return response.status(400).json({ message_code: e.message() });
+    }
+    return response.status(201).json(ret);
+  }
 
-	@Get('/remove/:id')
-	removeAchievement(@Res({ passthrough: true }) response, @Headers() head, @Param() id) {
-		if (head['token'] != token) {
-			return response.status(401).send('Unauthorized');
-		}
-		return this.achievementService.removeAchievement(id);
-	}
+  @Delete('/id/:id')
+  async removeAchievement(@Res() response, @Param() id) {
+    const achievement = await this.achievementService.removeAchievement(id);
+    if (achievement == null) {
+      return response
+        .status(400)
+        .json({ message_code: 'achievement not found' });
+    }
+    return response.status(200).json(achievement);
+  }
+
+  //TODO: ajouter images
 }
