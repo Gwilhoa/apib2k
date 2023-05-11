@@ -1,31 +1,27 @@
-import { Controller } from '@nestjs/common';
+import { Controller, UseGuards } from '@nestjs/common';
 import { token, ver } from '../app.controller';
 import { GeneralService } from './general.service';
 import { Body, Get, Headers, Param, Post, Res, Response } from '@nestjs/common';
-
+import { JwtAuthGuard } from '../authentification/jwt.guard';
+@UseGuards(JwtAuthGuard)
 @Controller(ver + 'general')
 export class GeneralController {
   constructor(private readonly generalService: GeneralService) {}
 
   @Post('season')
-  updateSeason(
-    @Res({ passthrough: true }) response,
-    @Headers() head,
-    @Body() body,
-  ) {
-    if (head['token'] != token) {
-      return response.status(401).send('Unauthorized');
+  updateSeason(@Res() response, @Body() body) {
+    if (body.name == null) {
+      return response.status(400).json({ message_code: 'Name is Null' });
     }
-    console.log(body);
-    this.generalService.updateSeason(body.season);
+    const season = this.generalService.updateSeason(body.name);
+    if (season == null) {
+      return response.status(400).json({ message_code: 'Bad Request' });
+    }
+    return response.status(200).send('success');
   }
 
   @Get('season')
-  getSeason(@Res({ passthrough: true }) response, @Headers() head) {
-    if (head['token'] != token) {
-      return response.status(401).send('Unauthorized');
-    }
-    console.log('get season');
-    return this.generalService.getSeason();
+  getSeason(@Res() response) {
+    return response.status(200).json(this.generalService.getSeason());
   }
 }

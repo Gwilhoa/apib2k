@@ -15,15 +15,14 @@ export class WaifusController {
   constructor(private readonly waifusService: WaifusService) {}
 
   @Post()
-  createWaifu(
-    @Res({ passthrough: true }) response,
-    @Headers() head,
-    @Body() body,
-  ) {
-    if (head['token'] != token) {
-      return response.status(401).send('Unauthorized');
+  createWaifu(@Res() response, @Body() body) {
+    let waifu;
+    try {
+      waifu = this.waifusService.createWaifu(body);
+    } catch (e) {
+      return response.status(400).json({ message_code: e.message() });
     }
-    this.waifusService.createWaifu(body);
+    this.waifusService.createWaifu(waifu);
     return response.status(200).send('OK');
   }
 

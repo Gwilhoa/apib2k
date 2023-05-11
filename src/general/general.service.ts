@@ -10,21 +10,19 @@ export class GeneralService {
   ) {}
 
   public async updateSeason(name) {
-    console.log(name);
     const season = await this.generalRepository.findOneBy({ key: 'season' });
     if (season == null) {
       const newSeason = new General();
       newSeason.key = 'season';
       newSeason.value = name;
-      await this.generalRepository.save(newSeason);
+      return await this.generalRepository.save(newSeason);
     } else {
       season.value = name;
-      await this.generalRepository.save(season);
+      return await this.generalRepository.save(season);
     }
   }
 
   public async getSeason() {
-    const general = await this.generalRepository.findOneBy({ key: 'season' });
-    return general;
+    return await this.generalRepository.findOneBy({ key: 'season' });
   }
 }

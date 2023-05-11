@@ -1,8 +1,8 @@
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { Waifu } from './waifus.entity';
-import { CreateWaifuDTO } from '../dto/create-waifus.dto';
+import { Injectable } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+import { Waifu } from "./waifus.entity";
+import { CreateWaifuDTO } from "../dto/create-waifus.dto";
 
 @Injectable()
 export class WaifusService {
@@ -11,27 +11,33 @@ export class WaifusService {
   ) {}
 
   public async createWaifu(createWaifuRequest: CreateWaifuDTO) {
+    if (createWaifuRequest.name == null) {
+      throw new Error('name is null');
+    }
+    if (createWaifuRequest.description == null) {
+      throw new Error('description is null');
+    }
+    if (createWaifuRequest.origin == null) {
+      throw new Error('origin is null');
+    }
     const waifu: Waifu = new Waifu();
-    waifu.name = createWaifuRequest?.name;
-    waifu.description = createWaifuRequest?.description;
-    waifu.origin = createWaifuRequest?.origin;
+    waifu.name = createWaifuRequest.name;
+    waifu.description = createWaifuRequest.description;
+    waifu.origin = createWaifuRequest.origin;
     waifu.rare = 0;
     waifu.epic = 0;
     waifu.legendary = 0;
-    await this.waifuRepository.save(waifu);
-    return waifu;
+    return await this.waifuRepository.save(waifu);
   }
 
-  public async allWaifus() {
-    const waifus = await this.waifuRepository.find();
-    return waifus;
+  public async waifus() {
+    return await this.waifuRepository.find();
   }
 
   public async getWaifuById(id: number) {
-    const waifu = await this.waifuRepository.findOneBy({
+    return await this.waifuRepository.findOneBy({
       id: id,
     });
-    return waifu;
   }
 
   public async resetWaifus() {
