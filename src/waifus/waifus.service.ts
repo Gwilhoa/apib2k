@@ -1,8 +1,8 @@
-import { Injectable } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
-import { Waifu } from "./waifus.entity";
-import { CreateWaifuDTO } from "../dto/create-waifus.dto";
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Waifu } from './waifus.entity';
+import { CreateWaifuDTO } from '../dto/create-waifus.dto';
 
 @Injectable()
 export class WaifusService {
@@ -30,7 +30,7 @@ export class WaifusService {
     return await this.waifuRepository.save(waifu);
   }
 
-  public async waifus() {
+  public async getWaifus() {
     return await this.waifuRepository.find();
   }
 
@@ -52,15 +52,10 @@ export class WaifusService {
   }
 
   public async getWaifuByName(name: string) {
-    const waifus = await this.waifuRepository.find();
-    const ret: Waifu[] = [];
-    let i = 0;
-    while (i < waifus.length) {
-      if (waifus[i].name.toLowerCase().startsWith(name.toLowerCase())) {
-        ret.push(waifus[i]);
-      }
-      i++;
-    }
-    return ret;
+    const waifus = await this.waifuRepository
+      .createQueryBuilder('waifu')
+      .andWhere('waifu.name LIKE :name', { name: '%' + name + '%' })
+      .getMany();
+    return waifus;
   }
 }

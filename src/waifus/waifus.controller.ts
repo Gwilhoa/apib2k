@@ -22,37 +22,26 @@ export class WaifusController {
     } catch (e) {
       return response.status(400).json({ message_code: e.message() });
     }
-    this.waifusService.createWaifu(waifu);
-    return response.status(200).send('OK');
+    return response.status(200).send(waifu);
   }
 
   @Get()
-  getAllWaifus(@Res({ passthrough: true }) response, @Headers() head) {
-    return this.waifusService.allWaifus();
+  getWaifus(@Res() response) {
+    return response.status(200).json(this.waifusService.getWaifus());
   }
 
   @Get('/id/:id')
-  getWaifuById(
-    @Res({ passthrough: true }) response,
-    @Headers() head,
-    @Param('id') id,
-  ) {
-    if (head['token'] != token) {
-      return response.status(401).send('Unauthorized');
+  getWaifuById(@Res() response, @Param('id') id) {
+    const waifu = this.waifusService.getWaifuById(id);
+    if (waifu == null) {
+      return response.status(204).json({ message_code: 'waifu not found' });
     }
-    return this.waifusService.getWaifuById(id);
+    return response.status(200).json(waifu);
   }
 
   @Get('/search/:name')
-  getWaifuByName(
-    @Res({ passthrough: true }) response,
-    @Headers() head,
-    @Param('name') name,
-  ) {
-    if (head['token'] != token) {
-      return response.status(401).send('Unauthorized');
-    }
-    return this.waifusService.getWaifuByName(name);
+  getWaifuByName(@Res() response, @Param('name') name) {
+    return response.status(200).json(this.waifusService.getWaifuByName(name));
   }
   @Get('reset')
   resetWaifus(@Res({ passthrough: true }) response, @Headers() head) {
