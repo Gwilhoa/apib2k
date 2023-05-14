@@ -1,5 +1,5 @@
 import { ver } from '../app.controller';
-import { Body, Controller, Get, Res } from '@nestjs/common';
+import { Body, Controller, Post, Res } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginDto } from '../dto/LoginDto';
 
@@ -7,7 +7,7 @@ import { LoginDto } from '../dto/LoginDto';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Get('/login')
+  @Post('/login')
   async login(@Body() body: LoginDto, @Res() res) {
     let token = null;
     try {
