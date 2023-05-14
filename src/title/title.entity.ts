@@ -1,5 +1,5 @@
 import { Members } from 'src/members/members.entity';
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class Title {
@@ -10,5 +10,6 @@ export class Title {
   name: string;
 
   @ManyToOne((type) => Members, (member) => member.titles)
+  @JoinColumn({ name: 'memberid' })
   member: Members;
 }
