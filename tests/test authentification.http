@@ -2,8 +2,9 @@
 GET https://api.bitume2000.fr/v2/auth/login
 Content-Type: application/x-www-form-urlencoded
 
-username=atlasbot
-password=GuiMauve5237-RORO&GUIGUI-B2K-NEKISWAIN-38
+{
+"username": "AtlasBot", "password": "GuiMauve5237-RORO&GUIGUI-B2K-NEKISWAIN-38"
+}
 
 
 ###

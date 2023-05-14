@@ -39,6 +39,7 @@ export class AuthService {
         process.env.BOT_PASSWORD,
       );
     }
+    if (username == null) throw new Error('username is null');
     const user = await this.membersService.getMemberByName(username);
     if (user == null) throw new Error('user not found');
     let token = null;
