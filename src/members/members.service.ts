@@ -300,6 +300,8 @@ export class MembersService {
   }
 
   async verifyPassword(user: Members, password: string) {
+    console.log(password);
+    console.log(bcrypt.compare(password, user.password))
     return await bcrypt.compare(password, user.password);
   }
 }

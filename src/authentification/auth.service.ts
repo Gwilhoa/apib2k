@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { sleep } from '../main';
 import {
@@ -10,6 +10,7 @@ import { MembersService } from '../members/members.service';
 
 @Injectable()
 export class AuthService {
+  private readonly logger = new Logger(AuthService.name);
   constructor(
     private readonly jwtService: JwtService,
     private membersService: MembersService,
@@ -24,6 +25,7 @@ export class AuthService {
     });
   }
   async login(username: string, password: string) {
+    this.logger.log('login ' + username);
     if (
       (await this.membersService.getMemberById('881962597526696038')) == null
     ) {
