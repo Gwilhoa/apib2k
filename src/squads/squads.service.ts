@@ -72,7 +72,7 @@ export class SquadsService {
     const squad = await this.squadsRepository
       .createQueryBuilder('squad')
       .leftJoinAndSelect('squad.members', 'members')
-      .where('squad.id IN (:...id)', { id: id })
+      .where('squad.id IN (:...members.id)', { id: id })
       .getOne();
     if (!squad) {
       return null;
