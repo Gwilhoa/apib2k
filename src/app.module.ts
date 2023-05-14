@@ -1,4 +1,4 @@
-import { ConfigurableModuleBuilder, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { DatabaseModule } from './database/database.module';
@@ -12,6 +12,16 @@ import { WaifusModule } from './waifus/waifus.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { GeneralModule } from './general/general.module';
 import { AuthModule } from './authentification/auth.module';
+import { ScheduleModule } from '@nestjs/schedule';
+import { UpdateService } from './update.service';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { MembersService } from './members/members.service';
+import { Members } from './members/members.entity';
+import { Waifu } from './waifus/waifus.entity';
+import { AchievementService } from './achievement/achievement.service';
+import { SquadsService } from './squads/squads.service';
+import { Achievement } from './achievement/achievement.entity';
+import { Squads } from './squads/squads.entity';
 
 @Module({
   imports: [
@@ -23,8 +33,22 @@ import { AuthModule } from './authentification/auth.module';
     WaifusModule,
     GeneralModule,
     AuthModule,
+    ScheduleModule.forRoot(),
+    ConfigModule,
+    TypeOrmModule.forFeature([Members]),
+    TypeOrmModule.forFeature([Waifu]),
+    TypeOrmModule.forFeature([Squads]),
+    TypeOrmModule.forFeature([Achievement]),
   ],
   controllers: [AppController, TitleController],
-  providers: [AppService, TitleService],
+  providers: [
+    AppService,
+    TitleService,
+    UpdateService,
+    ConfigService,
+    MembersService,
+    AchievementService,
+    SquadsService,
+  ],
 })
 export class AppModule {}

@@ -1,11 +1,11 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { randomInt } from 'crypto';
 import { AchievementService } from 'src/achievement/achievement.service';
 import { Title } from 'src/title/title.entity';
 import { Repository } from 'typeorm';
 import { CreateMembersDTO } from '../dto/create-members.dto';
-import { WaifuMembersDTO } from '../dto/waifu-members.dto';
+import * as bcrypt from 'bcrypt';
 import { SquadsService } from '../squads/squads.service';
 import { waifusMembers } from '../waifus-members/waifus-members.entity';
 import { Waifu } from '../waifus/waifus.entity';
@@ -23,6 +23,15 @@ export class MembersService {
     readonly squadService: SquadsService,
   ) {}
 
+  public async updateMemesVotes() {
+    const members = await this.membersRepository.find();
+    for (const member of members) {
+      if (member.memevotes < 3) {
+        member.memevotes += 1;
+        await this.membersRepository.save(member);
+      }
+    }
+  }
   public async createMember(createMembersDTO: CreateMembersDTO) {
     const member: Members = new Members();
     member.id = createMembersDTO.id;
@@ -273,10 +282,24 @@ export class MembersService {
     if (!member) throw new Error('Member not found');
     member.name = name;
     try {
-      const mem = await this.membersRepository.save(member);
-      return mem;
+      return await this.membersRepository.save(member);
     } catch (error) {
       throw new Error('NameFormat error');
     }
+  }
+
+  async setPassword(id, password: string) {
+    const member = await this.getMemberById(id);
+    if (!member) throw new Error('Member not found');
+    member.password = await bcrypt.hash(password, 10);
+    try {
+      return await this.membersRepository.save(member);
+    } catch (error) {
+      throw new Error('Password Format error');
+    }
+  }
+
+  async verifyPassword(user: Members, password: string) {
+    return await bcrypt.compare(password, user.password);
   }
 }

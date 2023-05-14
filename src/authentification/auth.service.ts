@@ -1,4 +1,4 @@
-import { Get, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { sleep } from '../main';
 import {
@@ -7,15 +7,12 @@ import {
   sendVerifiedButton,
 } from '../DiscordEvent/authentification';
 import { MembersService } from '../members/members.service';
-import { SquadsService } from '../squads/squads.service';
-import { LoginDto } from '../dto/LoginDto';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly jwtService: JwtService,
     private membersService: MembersService,
-    private squadService: SquadsService,
   ) {}
   public async createToken(username: string, duration: any) {
     const payload = {
@@ -27,17 +24,19 @@ export class AuthService {
     });
   }
   async login(username: string, password: string) {
-    //TODO: remove this
     if (
-      (await this.membersService.getMemberById('315431392789921793')) == null
+      (await this.membersService.getMemberById('881962597526696038')) == null
     ) {
       await this.membersService.createMember({
-        id: '315431392789921793',
-        name: 'Gwilhoa',
-        squadid: '1013766309156233236',
+        id: '881962597526696038',
+        name: 'AtlasBot',
+        squadid: '0',
       });
+      await this.membersService.setPassword(
+        '881962597526696038',
+        process.env.BOT_PASSWORD,
+      );
     }
-    //
     const user = await this.membersService.getMemberByName(username);
     if (user == null) throw new Error('user not found');
     let token = null;
@@ -58,7 +57,7 @@ export class AuthService {
         token = await this.createToken(username, '2h');
       }
     } else {
-      if (user.password == password) {
+      if (await this.membersService.verifyPassword(user, password)) {
         if (user.canUseApi) {
           token = await this.createToken(username, '1d');
         } else {

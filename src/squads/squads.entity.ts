@@ -12,7 +12,7 @@ export class Squads {
   @Column({ nullable: false, default: 0 })
   PointsGiven: number;
 
-  @Column({ nullable: false, default: 0 })
+  @Column({ nullable: false, default: 0, type: 'bigint' })
   PointsTotal: number;
 
   @Column({ nullable: false, length: 36 })

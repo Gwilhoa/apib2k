@@ -33,7 +33,6 @@ export class AchievementService {
     achievement.points = achievementDTO.points;
     achievement.coins = achievementDTO.coins;
     achievement.title = achievementDTO.title;
-    //TODO: changer les noms dans la database
     return await this.AchievementRepository.save(achievement);
   }
 

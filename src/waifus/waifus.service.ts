@@ -3,11 +3,13 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Waifu } from './waifus.entity';
 import { CreateWaifuDTO } from '../dto/create-waifus.dto';
+import { WaifusMembersService } from '../waifus-members/waifus-members.service';
 
 @Injectable()
 export class WaifusService {
   constructor(
     @InjectRepository(Waifu) private waifuRepository: Repository<Waifu>,
+    private waifuMebersService: WaifusMembersService,
   ) {}
 
   public async createWaifu(createWaifuRequest: CreateWaifuDTO) {
@@ -48,14 +50,14 @@ export class WaifusService {
       waifu.legendary = 0;
       await this.waifuRepository.save(waifu);
     }
+    await this.waifuMebersService.resetWaifusMembers();
     return waifus;
   }
 
   public async getWaifuByName(name: string) {
-    const waifus = await this.waifuRepository
+    return await this.waifuRepository
       .createQueryBuilder('waifu')
       .andWhere('waifu.name LIKE :name', { name: '%' + name + '%' })
       .getMany();
-    return waifus;
   }
 }

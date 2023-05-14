@@ -12,7 +12,6 @@ async function bootstrap() {
   const cors = require('cors');
 
   app.use(cors(corsOptions));
-
   await app.listen(42000);
 }
 
