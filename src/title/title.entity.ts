@@ -1,17 +1,12 @@
 import { Members } from 'src/members/members.entity';
-import {
-  Entity,
-  ManyToOne,
-  PrimaryColumn,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Title {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @PrimaryColumn()
+  @Column()
   name: string;
 
   @ManyToOne((type) => Members, (member) => member.titles)
