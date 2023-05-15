@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Headers,
+  Logger,
   Param,
   Patch,
   Post,
@@ -19,8 +20,12 @@ import { User } from '../authentification/auth.decorator';
 @UseGuards(JwtAuthGuard)
 @Controller(ver + 'squads')
 export class SquadsController {
-  constructor(private readonly squadService: SquadsService) {}
+  constructor(private readonly squadService: SquadsService) {
+    this.squadService.updateSquad();
+    this.logger.log('Squad updated');
+  }
 
+  private logger = new Logger('SquadsController');
   @Delete()
   public async deleteSquad(@Body() body, @Res() response) {
     const squad = await this.squadService.removeSquad(body.id);
@@ -49,7 +54,7 @@ export class SquadsController {
     return response.status(200).send(squad);
   }
   @Get('id/:id')
-  getSquadById(@Res() response, @Param() id) {
+  getSquadById(@Res() response, @Param('id') id) {
     const squad = this.squadService.getSquadById(id);
     if (squad == null) {
       return response.status(400).send('Squad not found');
@@ -62,7 +67,7 @@ export class SquadsController {
   }
 
   @Patch('id/:id')
-  addManualPoints(@Res() response, @Param() id, @Body() body) {
+  addManualPoints(@Res() response, @Param('id') id, @Body() body) {
     const points = this.squadService.addManualPoints(id, body.points);
     if (points == null) {
       return response.status(400).send('Squad not found');
@@ -71,7 +76,7 @@ export class SquadsController {
   }
 
   @Get('members/:id')
-  async getMembers(@Res() response, @Param() id) {
+  async getMembers(@Res() response, @Param('id') id) {
     const members = await this.squadService.getMembersBySquad(id);
     if (members == null) {
       return response.status(400).send('Squad not found');

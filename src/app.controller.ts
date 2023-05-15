@@ -1,11 +1,11 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Logger } from '@nestjs/common';
 import { AppService } from './app.service';
 
 const dotenv = require('dotenv');
 dotenv.config();
 const token = process.env.TOKEN;
 const ver = process.env.PREFIX;
-console.log(ver);
+
 export { token, ver };
 @Controller(ver)
 export class AppController {

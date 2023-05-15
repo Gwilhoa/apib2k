@@ -14,9 +14,9 @@ export class AchievementService {
     return await this.AchievementRepository.find();
   }
 
-  public async getAchievementById(ids) {
+  public async getAchievementById(id) {
     return await this.AchievementRepository.findOneBy({
-      id: ids.id,
+      id: id,
     });
   }
 

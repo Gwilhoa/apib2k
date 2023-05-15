@@ -30,7 +30,7 @@ export class AchievementController {
   }
 
   @Get('/id/:id')
-  async getAchievementById(@Res() response, @Param() id) {
+  async getAchievementById(@Res() response, @Param('id') id) {
     const achievement = await this.achievementService.getAchievementById(id);
     if (achievement == null) {
       return response
@@ -52,7 +52,7 @@ export class AchievementController {
   }
 
   @Delete('/id/:id')
-  async removeAchievement(@Res() response, @Param() id) {
+  async removeAchievement(@Res() response, @Param('id') id) {
     const achievement = await this.achievementService.removeAchievement(id);
     if (achievement == null) {
       return response

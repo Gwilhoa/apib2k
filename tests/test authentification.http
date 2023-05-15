@@ -1,11 +1,11 @@
 
 
 
-GET https://api.bitume2000.fr/v2/auth/login
-Content-Type: application/json
+GET https://localhost:42000/v2/auth/login
+Content-Type: application/x
 
 {
-"username": "AtlasBot", "password": "GuiMauve5237-RORO&GUIGUI-B2K-NEKISWAIN-38"
+"username": "Gwilhoa"
 }
 
 

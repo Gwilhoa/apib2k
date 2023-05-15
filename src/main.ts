@@ -2,7 +2,10 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { Client } from 'discord.js';
 import { setVerified } from './DiscordEvent/authentification';
+import { ver } from './app.controller';
+import { Logger } from '@nestjs/common';
 export const channelAnnonce = '1009895934999670885';
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const corsOptions = {
@@ -40,4 +43,8 @@ client.on('interactionCreate', async (interaction) => {
   }
 });
 export { client };
+const logger = new Logger('APIB2K');
+
+logger.log('version ' + ver);
+logger.log('developed by gchatain');
 bootstrap();

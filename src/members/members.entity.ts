@@ -22,7 +22,7 @@ export class Members {
   @Column({ nullable: false, length: 100 })
   name: string;
 
-  @Column({ nullable: false, default: 0 })
+  @Column({ nullable: false, default: 0, type: 'int' })
   points: number;
 
   @Column({ nullable: false, default: 0 })
@@ -32,7 +32,7 @@ export class Members {
   @JoinColumn({ name: 'squadid' })
   squad: Squads;
 
-  @ManyToMany((type) => Achievement, { eager: true, cascade: true })
+  @ManyToMany((type) => Achievement)
   @JoinTable({
     name: 'members_achievements',
     joinColumn: {

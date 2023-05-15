@@ -15,7 +15,6 @@ export async function sendVerifiedButton(id: string, name: string) {
 
   const row = new ActionRowBuilder().addComponents(button);
   onVerifiedButton.set(id, 0);
-  console.log(onVerifiedButton);
   const message =
     'bonjour ' +
     name +

@@ -35,7 +35,7 @@ export class MembersController {
   }
 
   @Get('/id/:id')
-  async getMemberById(@Param() id, @Res() response) {
+  async getMemberById(@Param('id') id, @Res() response) {
     const member = await this.membersService.getMemberById(id);
     if (member == null) {
       return response.status(204).json({ message_code: 'user not found' });
@@ -44,7 +44,7 @@ export class MembersController {
   }
 
   @Delete('/id/:id')
-  async deleteMemberById(@Param() id, @Res() response) {
+  async deleteMemberById(@Param('id') id, @Res() response) {
     const member = await this.membersService.removeMember(id);
     if (member == null) {
       return response.status(204).json({ message_code: 'user not found' });
@@ -53,7 +53,7 @@ export class MembersController {
   }
 
   @Patch('/name/{id}')
-  async changeMemberName(@Param() id, @Res() response, @Body() body) {
+  async changeMemberName(@Param('id') id, @Res() response, @Body() body) {
     const name = body.name;
     if (name == null)
       return response.status(400).json({ message_code: 'invalid body' });
@@ -65,7 +65,7 @@ export class MembersController {
   }
 
   @Get('/achievements/:id')
-  async getMemberAchievements(@Param() id, @Res() response) {
+  async getMemberAchievements(@Param('id') id, @Res() response) {
     const achievements = await this.membersService.getAchievements(id);
     if (achievements == null) {
       return response.status(204).json({ message_code: 'user not found' });
@@ -74,7 +74,7 @@ export class MembersController {
   }
 
   @Post('/achievements/:id')
-  async addMemberAchievements(@Param() id, @Res() response, @Body() body) {
+  async addMemberAchievements(@Param('id') id, @Res() response, @Body() body) {
     const achievement_id = body.achievement_id;
     if (achievement_id == null)
       return response.status(400).json({ message_code: 'invalid body' });
@@ -91,7 +91,7 @@ export class MembersController {
   }
 
   @Patch('/points/:id')
-  async updateMemberPoints(@Param() id, @Res() response, @Body() body) {
+  async updateMemberPoints(@Param('id') id, @Res() response, @Body() body) {
     const points = body.points;
     if (points == null)
       return response.status(400).json({ message_code: 'invalid body' });
@@ -105,7 +105,7 @@ export class MembersController {
   }
 
   @Patch('/coins/:id')
-  async updateMemberCoins(@Param() id, @Res() response, @Body() body) {
+  async updateMemberCoins(@Param('id') id, @Res() response, @Body() body) {
     const coins = body.coins;
     if (coins == null)
       return response.status(400).json({ message_code: 'invalid body' });
@@ -119,7 +119,7 @@ export class MembersController {
   }
 
   @Get('/title/:id')
-  async getMemberTitle(@Param() id, @Res() response) {
+  async getMemberTitle(@Param('id') id, @Res() response) {
     const title = await this.membersService.getTitles(id);
     if (title == null) {
       return response.status(204).json({ message_code: 'user not found' });
@@ -128,7 +128,7 @@ export class MembersController {
   }
 
   @Post('/title/:id')
-  async addMemberTitle(@Param() id, @Res() response, @Body() body) {
+  async addMemberTitle(@Param('id') id, @Res() response, @Body() body) {
     const new_title = body.title;
     if (new_title == null)
       return response.status(400).json({ message_code: 'invalid body' });
@@ -142,7 +142,7 @@ export class MembersController {
   }
 
   @Patch('/title/:id')
-  async updateMemberTitle(@Param() id, @Res() response, @Body() body) {
+  async updateMemberTitle(@Param('id') id, @Res() response, @Body() body) {
     const new_title = body.title;
     if (new_title == null)
       return response.status(400).json({ message_code: 'invalid body' });
@@ -156,7 +156,7 @@ export class MembersController {
   }
 
   @Patch('/memesvotes/:id')
-  async useVote(@Param() id, @Res() response) {
+  async useVote(@Param('id') id, @Res() response) {
     let member = null;
     try {
       member = await this.membersService.useVote(id);
@@ -167,7 +167,7 @@ export class MembersController {
   }
 
   @Patch('/memes/:id')
-  async addMeme(@Param() id, @Res() response) {
+  async addMeme(@Param('id') id, @Res() response) {
     let member = null;
     try {
       member = await this.membersService.addMeme(id);
@@ -178,7 +178,7 @@ export class MembersController {
   }
 
   @Post('/waifus/:id')
-  async catchWaifu(@Param() id, @Res() response) {
+  async catchWaifu(@Param('id') id, @Res() response) {
     let waifuMember = null;
     try {
       waifuMember = await this.membersService.catchWaifu(id);
@@ -191,7 +191,7 @@ export class MembersController {
   }
 
   @Get('/waifus/:id')
-  async getWaifus(@Param() id, @Res() response) {
+  async getWaifus(@Param('id') id, @Res() response) {
     const waifus = await this.membersService.getWaifus(id);
     if (waifus == null) {
       return response.status(400).json({ message_code: 'user not found' });

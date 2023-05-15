@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateSquadDTO } from '../dto/create-squads.dto';
@@ -11,7 +11,20 @@ export class SquadsService {
     @InjectRepository(Squads) private squadsRepository: Repository<Squads>,
     @InjectRepository(Members) private membersRepository: Repository<Members>,
   ) {}
-
+  private logger = new Logger('SquadsService');
+  public async updateSquad() {
+    const squads = await this.squadsRepository.find();
+    for (const squad of squads) {
+      const members = await this.getMembersBySquad(squad.id);
+      let points = 0;
+      for (const member of members) {
+        points += parseInt(member.points.toString());
+      }
+      points += parseInt(squad.PointsGiven.toString());
+      squad.PointsTotal = points;
+      await this.squadsRepository.save(squad);
+    }
+  }
   public async removeSquad(id) {
     const squad = await this.squadsRepository.findOneBy({ id: id });
     const defaultSquad = await this.squadsRepository.findOneBy({ id: '0' });
@@ -72,18 +85,16 @@ export class SquadsService {
     const squad = await this.squadsRepository
       .createQueryBuilder('squad')
       .leftJoinAndSelect('squad.members', 'members')
-      .where('squad.id IN (:...members.id)', { id: id })
+      .where('squad.id = :id', { id: id })
       .getOne();
     if (!squad) {
       return null;
     }
     let members = squad.members;
-    if (members == null || members.length == 0) {
+    if (!members || members.length === 0) {
       return [];
     }
-    members = members.sort((a, b) => {
-      return b.points - a.points;
-    });
+    members = members.sort((a, b) => b.points - a.points);
     return members;
   }
 

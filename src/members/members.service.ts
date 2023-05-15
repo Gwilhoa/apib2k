@@ -62,13 +62,15 @@ export class MembersService {
   }
 
   public async getMemberById(id) {
-    return await this.membersRepository.findOneBy({
-      id: id,
-    });
+    return await this.membersRepository
+      .createQueryBuilder('members')
+      .leftJoinAndSelect('members.squad', 'squad')
+      .where('members.id = :id', { id: id })
+      .getOne();
   }
-  public async removeMember(ids) {
+  public async removeMember(id) {
     const member = await this.membersRepository.findOneBy({
-      id: ids.id,
+      id: id,
     });
     if (member) return await this.membersRepository.remove(member);
     return null;
@@ -85,6 +87,11 @@ export class MembersService {
     );
     if (achievement == null) throw new Error('Achievement not found');
     if (member == null) throw new Error('Member not found');
+    await this.updateCoins(member.id, achievement.coins);
+    await this.updatePoints(member.id, achievement.points);
+    if (achievement.title != null) {
+      await this.addTitle(member.id, achievement.title);
+    }
     member.achievements.push(achievement);
     await this.membersRepository.save(member);
     const channel = client.channels.cache.get(channelAnnonce) as TextChannel;
@@ -96,10 +103,12 @@ export class MembersService {
     return member.achievements;
   }
 
-  public async getAchievements(ids) {
-    const member = await this.membersRepository.findOneBy({
-      id: ids.id,
-    });
+  public async getAchievements(id) {
+    const member = await this.membersRepository
+      .createQueryBuilder('members')
+      .leftJoinAndSelect('members.achievements', 'achievements')
+      .where('members.id = :id', { id: id })
+      .getOne();
     if (member) {
       return member.achievements;
     }
@@ -227,6 +236,12 @@ export class MembersService {
         throw new Error('Member not found');
       }
       const squad = member.squad;
+      if (
+        member.points + points < -2147483648 &&
+        member.points + points > 2147483647
+      ) {
+        throw new Error('points overflow');
+      }
       member.points += points;
       squad.PointsTotal += points;
       return await this.membersRepository.save(member);
@@ -235,6 +250,11 @@ export class MembersService {
   }
 
   async updateCoins(id, coins: any) {
+    try {
+      coins = parseInt(coins);
+    } catch (error) {
+      throw new Error('Coins must be a number');
+    }
     const member = await this.getMemberById(id);
     if (!member) {
       throw new Error('Member not found');
@@ -300,8 +320,6 @@ export class MembersService {
   }
 
   async verifyPassword(user: Members, password: string) {
-    console.log(password);
-    console.log(bcrypt.compare(password, user.password))
     return await bcrypt.compare(password, user.password);
   }
 }
