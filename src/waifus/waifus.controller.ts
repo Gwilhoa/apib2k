@@ -15,10 +15,10 @@ export class WaifusController {
   constructor(private readonly waifusService: WaifusService) {}
 
   @Post()
-  createWaifu(@Res() response, @Body() body) {
+  async createWaifu(@Res() response, @Body() body) {
     let waifu;
     try {
-      waifu = this.waifusService.createWaifu(body);
+      waifu = await this.waifusService.createWaifu(body);
     } catch (e) {
       return response.status(400).json({ message_code: e.message() });
     }
@@ -26,29 +26,31 @@ export class WaifusController {
   }
 
   @Get()
-  getWaifus(@Res() response) {
-    return response.status(200).json(this.waifusService.getWaifus());
+  async getWaifus(@Res() response) {
+    return response.status(200).json(await this.waifusService.getWaifus());
   }
 
   @Get('/id/:id')
-  getWaifuById(@Res() response, @Param('id') id) {
-    const waifu = this.waifusService.getWaifuById(id);
+  async getWaifuById(@Res() response, @Param('id') id) {
+    const waifu = await this.waifusService.getWaifuById(id);
     if (waifu == null) {
-      return response.status(204).json({ message_code: 'waifu not found' });
+      return response.status(204).send({ message_code: 'waifu not found' });
     }
-    return response.status(200).json(waifu);
+    return response.status(200).send(waifu);
   }
 
   @Get('/search/:name')
-  getWaifuByName(@Res() response, @Param('name') name) {
-    return response.status(200).json(this.waifusService.getWaifuByName(name));
+  async getWaifuByName(@Res() response, @Param('name') name) {
+    return response
+      .status(200)
+      .json(await this.waifusService.getWaifuByName(name));
   }
   @Get('reset')
-  resetWaifus(@Res({ passthrough: true }) response, @Headers() head) {
+  async resetWaifus(@Res({ passthrough: true }) response, @Headers() head) {
     if (head['token'] != token) {
       return response.status(401).send('Unauthorized');
     }
-    this.waifusService.resetWaifus();
+    await this.waifusService.resetWaifus();
     return response.status(200).send('OK');
   }
 }

@@ -9,7 +9,7 @@ import { WaifusMembersService } from '../waifus-members/waifus-members.service';
 export class WaifusService {
   constructor(
     @InjectRepository(Waifu) private waifuRepository: Repository<Waifu>,
-    private waifuMebersService: WaifusMembersService,
+    private waifuMembersService: WaifusMembersService,
   ) {}
 
   public async createWaifu(createWaifuRequest: CreateWaifuDTO) {
@@ -37,9 +37,7 @@ export class WaifusService {
   }
 
   public async getWaifuById(id: number) {
-    return await this.waifuRepository.findOneBy({
-      id: id,
-    });
+    return await this.waifuRepository.findOneBy({ id: id });
   }
 
   public async resetWaifus() {
@@ -50,7 +48,7 @@ export class WaifusService {
       waifu.legendary = 0;
       await this.waifuRepository.save(waifu);
     }
-    await this.waifuMebersService.resetWaifusMembers();
+    await this.waifuMembersService.resetWaifusMembers();
     return waifus;
   }
 
