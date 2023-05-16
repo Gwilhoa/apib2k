@@ -151,6 +151,7 @@ export class MembersService {
     const member = await this.membersRepository
       .createQueryBuilder('members')
       .leftJoinAndSelect('members.waifus', 'waifus')
+      .leftJoinAndSelect('waifus.waifu', 'waifu')
       .where('members.id = :id', { id: id })
       .getOne();
     if (member) {
