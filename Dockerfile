@@ -1,6 +1,7 @@
 # Utilisation de l'image officielle MariaDB
 FROM mariadb:latest
 
+COPY ./my_webapp.sql /docker-entrypoint-initdb.d/
 # Configuration des variables d'environnement
 ENV MYSQL_ROOT_PASSWORD=root
 ENV MYSQL_DATABASE=my_webapp

@@ -2,13 +2,13 @@ import {
   Body,
   Controller,
   Delete,
-  Get,
+  Get, Logger,
   Param,
   Patch,
   Post,
   Res,
-  UseGuards,
-} from '@nestjs/common';
+  UseGuards
+} from "@nestjs/common";
 import { MembersService } from './members.service';
 import { ver } from '../app.controller';
 import { JwtAuthGuard } from '../authentification/jwt.guard';
@@ -17,7 +17,10 @@ import { User } from '../authentification/auth.decorator';
 @UseGuards(JwtAuthGuard)
 @Controller(ver + 'members')
 export class MembersController {
-  constructor(private readonly membersService: MembersService) {}
+  private logger = new Logger('MembersController');
+  constructor(private readonly membersService: MembersService) {
+    this.updateTitle();
+  }
 
   @Get()
   async getMembers(@Res() res) {
@@ -197,5 +200,22 @@ export class MembersController {
       return response.status(400).json({ message_code: 'user not found' });
     }
     return response.status(200).json(waifus);
+  }
+
+  private async updateTitle() {
+    //TODO: a delete
+    const members = await this.membersService.getMembers();
+    for (const member of members) {
+      const achievements = await this.membersService.getAchievements(member.id);
+      for (const achievement of achievements) {
+        try {
+          if (achievement.title == null) continue;
+          await this.membersService.addTitle(member.id, achievement.title);
+          this.logger.log(`Added title ${achievement.title} to ${member.id}`);
+        } catch (e) {
+          this.logger.error(e.message);
+        }
+      }
+    }
   }
 }
