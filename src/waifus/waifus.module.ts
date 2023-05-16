@@ -13,7 +13,6 @@ import { waifusMembers } from '../waifus-members/waifus-members.entity';
   imports: [
     TypeOrmModule.forFeature([Waifu]),
     TypeOrmModule.forFeature([waifusMembers]),
-    ConfigModule,
   ],
 })
 export class WaifusModule {}

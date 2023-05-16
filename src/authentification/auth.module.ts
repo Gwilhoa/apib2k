@@ -13,6 +13,12 @@ import { SquadsService } from '../squads/squads.service';
 import { Squads } from '../squads/squads.entity';
 import { AchievementService } from '../achievement/achievement.service';
 import { Achievement } from '../achievement/achievement.entity';
+import { WaifusService } from '../waifus/waifus.service';
+import { ItemService } from '../item/item.service';
+import { Item } from '../item/item.entity';
+import { waifusMembers } from '../waifus-members/waifus-members.entity';
+import { WaifusMembersService } from '../waifus-members/waifus-members.service';
+import { MyItem } from "../item/myitem.entity";
 
 @Module({
   imports: [
@@ -23,6 +29,10 @@ import { Achievement } from '../achievement/achievement.entity';
     TypeOrmModule.forFeature([Waifu]),
     TypeOrmModule.forFeature([Squads]),
     TypeOrmModule.forFeature([Achievement]),
+    TypeOrmModule.forFeature([Item]),
+    TypeOrmModule.forFeature([Waifu]),
+    TypeOrmModule.forFeature([waifusMembers]),
+    TypeOrmModule.forFeature([MyItem]),
   ],
   providers: [
     AuthService,
@@ -31,6 +41,9 @@ import { Achievement } from '../achievement/achievement.entity';
     ConfigService,
     SquadsService,
     AchievementService,
+    WaifusService,
+    ItemService,
+    WaifusMembersService,
   ],
   exports: [AuthService],
   controllers: [AuthController],

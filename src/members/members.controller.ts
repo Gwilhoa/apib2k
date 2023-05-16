@@ -200,4 +200,27 @@ export class MembersController {
     }
     return response.status(200).json(waifus);
   }
+
+  @Get('/inventory/:id')
+  async getInventory(@Param('id') id, @Res() response) {
+    const inventory = await this.membersService.getInventory(id);
+    if (inventory == null) {
+      return response.status(400).json({ message_code: 'user not found' });
+    }
+    return response.status(200).json(inventory);
+  }
+
+  @Post('/inventory/:id')
+  async addInventory(@Param('id') id, @Res() response, @Body() body) {
+    const item_id = body.item_id;
+    if (item_id == null)
+      return response.status(400).json({ message_code: 'invalid body' });
+    let inventory = null;
+    try {
+      inventory = await this.membersService.buyItem(id, item_id);
+    } catch (e) {
+      return response.status(400).json({ message_code: e.message });
+    }
+    return response.status(200).json(inventory);
+  }
 }

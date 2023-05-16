@@ -11,6 +11,12 @@ import { AchievementService } from '../achievement/achievement.service';
 import { Achievement } from '../achievement/achievement.entity';
 import { AuthModule } from '../authentification/auth.module';
 import { JwtService } from '@nestjs/jwt';
+import { Item } from '../item/item.entity';
+import { ItemService } from '../item/item.service';
+import { WaifusService } from '../waifus/waifus.service';
+import { WaifusMembersService } from '../waifus-members/waifus-members.service';
+import { waifusMembers } from '../waifus-members/waifus-members.entity';
+import { MyItem } from "../item/myitem.entity";
 
 @Module({
   providers: [
@@ -19,6 +25,9 @@ import { JwtService } from '@nestjs/jwt';
     AchievementService,
     JwtService,
     ConfigService,
+    ItemService,
+    WaifusService,
+    WaifusMembersService,
   ],
   controllers: [MembersController],
   imports: [
@@ -26,6 +35,9 @@ import { JwtService } from '@nestjs/jwt';
     TypeOrmModule.forFeature([Waifu]),
     TypeOrmModule.forFeature([Squads]),
     TypeOrmModule.forFeature([Achievement]),
+    TypeOrmModule.forFeature([Item]),
+    TypeOrmModule.forFeature([waifusMembers]),
+    TypeOrmModule.forFeature([MyItem]),
     AuthModule,
     ConfigModule,
   ],

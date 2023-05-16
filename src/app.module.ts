@@ -22,6 +22,13 @@ import { AchievementService } from './achievement/achievement.service';
 import { SquadsService } from './squads/squads.service';
 import { Achievement } from './achievement/achievement.entity';
 import { Squads } from './squads/squads.entity';
+import { ItemModule } from './item/item.module';
+import { WaifusService } from './waifus/waifus.service';
+import { WaifusMembersService } from './waifus-members/waifus-members.service';
+import { Item } from './item/item.entity';
+import { ItemService } from './item/item.service';
+import { waifusMembers } from './waifus-members/waifus-members.entity';
+import { MyItem } from './item/myitem.entity';
 
 @Module({
   imports: [
@@ -39,6 +46,10 @@ import { Squads } from './squads/squads.entity';
     TypeOrmModule.forFeature([Waifu]),
     TypeOrmModule.forFeature([Squads]),
     TypeOrmModule.forFeature([Achievement]),
+    TypeOrmModule.forFeature([Item]),
+    TypeOrmModule.forFeature([waifusMembers]),
+    TypeOrmModule.forFeature([MyItem]),
+    ItemModule,
   ],
   controllers: [AppController, TitleController],
   providers: [
@@ -49,6 +60,9 @@ import { Squads } from './squads/squads.entity';
     MembersService,
     AchievementService,
     SquadsService,
+    WaifusService,
+    WaifusMembersService,
+    ItemService,
   ],
 })
 export class AppModule {}

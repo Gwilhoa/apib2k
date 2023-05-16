@@ -13,13 +13,17 @@ import { Members } from './members.entity';
 import { CreateSquadDTO } from '../dto/create-squads.dto';
 import { channelAnnonce, client } from '../main';
 import { TextChannel } from 'discord.js';
+import { ItemService } from '../item/item.service';
+import { WaifusService } from '../waifus/waifus.service';
+import { MyItem } from '../item/myitem.entity';
 
 @Injectable()
 export class MembersService {
   constructor(
     @InjectRepository(Members) private membersRepository: Repository<Members>,
-    @InjectRepository(Waifu) private waifuRepository: Repository<Waifu>,
+    readonly WaifusService: WaifusService,
     readonly achievementService: AchievementService,
+    readonly itemService: ItemService,
     readonly squadService: SquadsService,
   ) {}
 
@@ -171,7 +175,7 @@ export class MembersService {
       if (wait > Date.now()) {
         throw new Error(wait - Date.now() + ' ms');
       }
-      const waifus = await this.waifuRepository.find();
+      const waifus = await this.WaifusService.getWaifus();
       const waifu = waifus[randomInt(0, waifus.length - 1)];
       const catchWaifu = new waifusMembers();
       catchWaifu.waifu = waifu;
@@ -210,7 +214,7 @@ export class MembersService {
       member.waifutime = Date.now();
       member.waifus.push(catchWaifu);
       await this.membersRepository.save(member);
-      await this.waifuRepository.save(waifu);
+      await this.WaifusService.saveWaifu(waifu);
       return catchWaifu;
     }
     return null;
@@ -322,5 +326,27 @@ export class MembersService {
 
   async verifyPassword(user: Members, password: string) {
     return await bcrypt.compare(password, user.password);
+  }
+
+  async getInventory(id) {
+    const member = await this.getMemberById(id);
+    if (!member) throw new Error('Member not found');
+    return member.items;
+  }
+
+  async buyItem(id, item_id: any) {
+    const member = await this.getMemberById(id);
+    const item = await this.itemService.getItemById(item_id);
+    if (!member) throw new Error('Member not found');
+    if (!item) throw new Error('Item not found');
+    if (member.coins >= item.price) {
+      member.coins -= item.price;
+      const myitem = new MyItem();
+      myitem.item = item;
+      myitem.member = member;
+      member.items.push(myitem);
+      this.itemService.saveMyItem(myitem);
+      return await this.membersRepository.save(member);
+    }
   }
 }

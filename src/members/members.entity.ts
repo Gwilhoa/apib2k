@@ -13,6 +13,8 @@ import {
 } from 'typeorm';
 import { WaifusMembersController } from '../waifus-members/waifus-members.controller';
 import { waifusMembers } from '../waifus-members/waifus-members.entity';
+import { Item } from '../item/item.entity';
+import { MyItem } from '../item/myitem.entity';
 
 @Entity()
 export class Members {
@@ -77,4 +79,7 @@ export class Members {
 
   @Column({ nullable: true })
   password: string;
+
+  @OneToMany(() => MyItem, (item) => item.member)
+  items: MyItem[];
 }

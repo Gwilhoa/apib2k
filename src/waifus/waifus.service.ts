@@ -58,4 +58,8 @@ export class WaifusService {
       .andWhere('waifu.name LIKE :name', { name: '%' + name + '%' })
       .getMany();
   }
+
+  public async saveWaifu(waifu: Waifu) {
+    return await this.waifuRepository.save(waifu);
+  }
 }
