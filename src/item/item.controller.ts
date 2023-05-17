@@ -4,7 +4,7 @@ import { ItemService } from './item.service';
 import { ver } from "../app.controller";
 
 @UseGuards(JwtAuthGuard)
-@Controller(ver + '/item/')
+@Controller(ver + 'item')
 export class ItemController {
   constructor(readonly itemService: ItemService) {}
 
