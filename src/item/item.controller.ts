@@ -1,9 +1,10 @@
 import { Body, Controller, Get, Post, Res, UseGuards } from "@nestjs/common";
 import { JwtAuthGuard } from '../authentification/jwt.guard';
 import { ItemService } from './item.service';
+import { ver } from "../app.controller";
 
 @UseGuards(JwtAuthGuard)
-@Controller('item')
+@Controller(ver + '/item/')
 export class ItemController {
   constructor(readonly itemService: ItemService) {}
 
