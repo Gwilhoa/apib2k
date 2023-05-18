@@ -21,7 +21,7 @@ export class GeneralController {
   }
 
   @Get('season')
-  getSeason(@Res() response) {
-    return response.status(200).json(this.generalService.getSeason());
+  async getSeason(@Res() response) {
+    return response.status(200).json(await this.generalService.getSeason());
   }
 }
