@@ -3,12 +3,12 @@ import { ver } from '../app.controller';
 import { GeneralService } from './general.service';
 import { Body, Get, Post, Res } from '@nestjs/common';
 import { JwtAuthGuard } from '../authentification/jwt.guard';
-@UseGuards(JwtAuthGuard)
 @Controller(ver + 'general')
 export class GeneralController {
   constructor(private readonly generalService: GeneralService) {}
 
   @Post('season')
+  @UseGuards(JwtAuthGuard)
   updateSeason(@Res() response, @Body() body) {
     if (body.name == null) {
       return response.status(400).json({ message_code: 'Name is Null' });

@@ -1,11 +1,12 @@
 
 
 
-GET https://localhost:42000/v2/auth/login
-Content-Type: application/x
+POST https://api.bitume2000.fr/v2/auth/login
+accept: application/json
+content-type: application/json
 
 {
-"username": "Gwilhoa"
+  "username": "enki"
 }
 
 
