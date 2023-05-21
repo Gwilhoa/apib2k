@@ -347,14 +347,15 @@ export class MembersService {
       member.coins -= item.price;
       let i = 0;
       while (i < amount) {
-        const myitem = new MyItem();
+        let myitem = new MyItem();
         myitem.item = item;
         myitem.member = member;
+        myitem = await this.itemService.saveMyItem(myitem);
         member.items.push(myitem);
-        await this.itemService.saveMyItem(myitem);
         i++;
       }
-      return await this.membersRepository.save(member);
+      const ret = await this.membersRepository.save(member);
+      return ret.items;
     }
   }
 }
