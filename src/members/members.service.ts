@@ -349,7 +349,6 @@ export class MembersService {
       while (i < amount) {
         let myitem = new MyItem();
         myitem.item = item;
-        myitem.member = member;
         myitem = await this.itemService.saveMyItem(myitem);
         member.items.push(myitem);
         i++;
