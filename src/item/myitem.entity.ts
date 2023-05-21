@@ -16,9 +16,9 @@ export class MyItem {
   @ManyToOne(() => Item, (item) => item.id)
   item: Item;
 
-  @ManyToOne(() => Members, (member) => member.items) // Modifier MyItem en Members
-  @JoinColumn({ name: 'memberId' }) // Modifier en fonction du nom réel de la colonne de clé étrangère
-  member: Members;
+  //@ManyToOne(() => Members, (member) => member.items) // Modifier MyItem en Members
+  //@JoinColumn({ name: 'memberId' }) // Modifier en fonction du nom réel de la colonne de clé étrangère
+  //member: Members;
 
   @Column({ nullable: false, default: 0 })
   quantity: number;
