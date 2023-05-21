@@ -15,9 +15,10 @@ export class AuthService {
     private readonly jwtService: JwtService,
     private membersService: MembersService,
   ) {}
-  public async createToken(username: string, duration: any) {
+  public async createToken(username: string, duration: any, isAdmin: boolean) {
     const payload = {
       username: username,
+      isAdmin: isAdmin,
     };
     return await this.jwtService.signAsync(payload, {
       expiresIn: duration,
@@ -55,16 +56,16 @@ export class AuthService {
         }
       }
       if (user.canUseApi) {
-        token = await this.createToken(username, '1d');
+        token = await this.createToken(username, '2h', true);
       } else {
-        token = await this.createToken(username, '2h');
+        token = await this.createToken(username, '2h', false);
       }
     } else {
       if (await this.membersService.verifyPassword(user, password)) {
         if (user.canUseApi) {
-          token = await this.createToken(username, '1d');
+          token = await this.createToken(username, '2h', true);
         } else {
-          token = await this.createToken(username, '2h');
+          token = await this.createToken(username, '2h', false);
         }
       } else {
         throw new Error('password not match');

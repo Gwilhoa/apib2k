@@ -203,9 +203,14 @@ export class MembersController {
 
   @Get('/inventory/:id')
   async getInventory(@Param('id') id, @Res() response) {
-    const inventory = await this.membersService.getInventory(id);
+    let inventory = null;
+    try {
+      inventory = await this.membersService.getInventory(id);
+    } catch (e) {
+      return response.status(400).json({ message_code: e.message });
+    }
     if (inventory == null) {
-      return response.status(400).json({ message_code: 'user not found' });
+      return response.status(204).json({ message_code: 'empty inventory' });
     }
     return response.status(200).json(inventory);
   }
@@ -213,11 +218,12 @@ export class MembersController {
   @Post('/inventory/:id')
   async addInventory(@Param('id') id, @Res() response, @Body() body) {
     const item_id = body.item_id;
-    if (item_id == null)
+    const quantity = body.quantity;
+    if (item_id == null || quantity == null)
       return response.status(400).json({ message_code: 'invalid body' });
     let inventory = null;
     try {
-      inventory = await this.membersService.buyItem(id, item_id);
+      inventory = await this.membersService.buyItem(id, item_id, quantity);
     } catch (e) {
       return response.status(400).json({ message_code: e.message });
     }

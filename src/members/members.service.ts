@@ -334,18 +334,26 @@ export class MembersService {
     return member.items;
   }
 
-  async buyItem(id, item_id: any) {
-    const member = await this.getMemberById(id);
+  async buyItem(id, item_id: any, amount: any) {
+    const member = await this.membersRepository
+      .createQueryBuilder('member')
+      .leftJoinAndSelect('member.items', 'items')
+      .where('member.id = :id', { id })
+      .getOne();
     const item = await this.itemService.getItemById(item_id);
     if (!member) throw new Error('Member not found');
     if (!item) throw new Error('Item not found');
     if (member.coins >= item.price) {
       member.coins -= item.price;
-      const myitem = new MyItem();
-      myitem.item = item;
-      myitem.member = member;
-      member.items.push(myitem);
-      this.itemService.saveMyItem(myitem);
+      let i = 0;
+      while (i < amount) {
+        const myitem = new MyItem();
+        myitem.item = item;
+        myitem.member = member;
+        member.items.push(myitem);
+        await this.itemService.saveMyItem(myitem);
+        i++;
+      }
       return await this.membersRepository.save(member);
     }
   }
