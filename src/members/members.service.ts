@@ -335,11 +335,7 @@ export class MembersService {
   }
 
   async buyItem(id, item_id: any, amount: any) {
-    const member = await this.membersRepository
-      .createQueryBuilder('member')
-      .leftJoinAndSelect('member.items', 'items')
-      .where('member.id = :id', { id })
-      .getOne();
+    const member = await this.getMemberById(id);
     const item = await this.itemService.getItemById(item_id);
     if (!member) throw new Error('Member not found');
     if (!item) throw new Error('Item not found');
