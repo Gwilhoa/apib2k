@@ -16,10 +16,10 @@ export class MyItem {
   @ManyToOne(() => Item, (item) => item.id)
   item: Item;
 
-  //@ManyToOne(() => Members, (member) => member.items) // Modifier MyItem en Members
-  //@JoinColumn({ name: 'memberId' }) // Modifier en fonction du nom réel de la colonne de clé étrangère
-  //member: Members;
-
   @Column({ nullable: false, default: 0 })
   quantity: number;
+
+  @ManyToOne(() => Members, (member) => member.items)
+  @JoinColumn({ name: 'member_id' }) // Remplacez 'member_id' par le nom de votre colonne de jointure
+  member: Members;
 }

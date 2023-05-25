@@ -80,6 +80,7 @@ export class Members {
   @Column({ nullable: true })
   password: string;
 
-  @OneToMany(() => MyItem, (item) => item.id)
+  @OneToMany(() => MyItem, (myItem) => myItem.member)
+  @JoinColumn({ name: 'id', referencedColumnName: 'member_id' })
   items: MyItem[];
 }

@@ -329,25 +329,42 @@ export class MembersService {
   }
 
   async getInventory(id) {
-    const member = await this.getMemberById(id);
+    const member = await this.membersRepository
+      .createQueryBuilder('member')
+      .leftJoinAndSelect('member.items', 'items')
+      .leftJoinAndSelect('items.item', 'item')
+      .where('member.id = :id', { id })
+      .getOne();
     if (!member) throw new Error('Member not found');
     return member.items;
   }
 
   async buyItem(id, item_id: any, amount: any) {
-    const member = await this.getMemberById(id);
+    const member = await this.membersRepository
+      .createQueryBuilder('member')
+      .leftJoinAndSelect('member.items', 'items')
+      .leftJoinAndSelect('items.item', 'item')
+      .where('member.id = :id', { id })
+      .getOne();
     const item = await this.itemService.getItemById(item_id);
     if (!member) throw new Error('Member not found');
     if (!item) throw new Error('Item not found');
     if (member.coins >= item.price) {
+      let flag = false;
       member.coins -= item.price;
-      let i = 0;
-      while (i < amount) {
-        let myitem = new MyItem();
-        myitem.item = item;
-        myitem = await this.itemService.saveMyItem(myitem);
-        member.items.push(myitem);
-        i++;
+      for (const i of member.items) {
+        if (i.item.id == item_id) {
+          i.quantity += parseInt(amount);
+          await this.itemService.saveMyItem(i);
+          flag = true;
+        }
+      }
+      if (!flag) {
+        let item = new MyItem();
+        item.item = await this.itemService.getItemById(item_id);
+        item.quantity = amount;
+        item = await this.itemService.saveMyItem(item);
+        member.items.push(item);
       }
       const ret = await this.membersRepository.save(member);
       return ret.items;
