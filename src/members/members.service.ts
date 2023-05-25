@@ -91,6 +91,11 @@ export class MembersService {
     );
     if (achievement == null) throw new Error('Achievement not found');
     if (member == null) throw new Error('Member not found');
+    for (const ach of member.achievements) {
+      if (ach.id == achievement.id) {
+        throw new Error('Achievement already obtained');
+      }
+    }
     await this.updateCoins(member.id, achievement.coins);
     await this.updatePoints(member.id, achievement.points);
     if (achievement.title != null) {
