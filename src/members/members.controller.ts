@@ -222,11 +222,11 @@ export class MembersController {
     if (item_id == null || quantity == null)
       return response.status(400).json({ message_code: 'invalid body' });
     let inventory = null;
-    //try {
+    try {
       inventory = await this.membersService.buyItem(id, item_id, quantity);
-    //} catch (e) {
-      //return response.status(400).json({ message_code: e.message });
-    //}
+    } catch (e) {
+      return response.status(400).json({ message_code: e.message });
+    }
     return response.status(200).json(inventory);
   }
 }

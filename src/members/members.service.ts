@@ -354,6 +354,7 @@ export class MembersService {
     const item = await this.itemService.getItemById(item_id);
     if (!member) throw new Error('Member not found');
     if (!item) throw new Error('Item not found');
+    if (member.coins < item.price * amount) throw new Error('Not enough coins');
     if (member.coins >= item.price) {
       let flag = false;
       member.coins -= item.price;
