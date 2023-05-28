@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Res, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, Param, Post, Res, UseGuards } from "@nestjs/common";
 import { JwtAuthGuard } from '../authentification/jwt.guard';
 import { ItemService } from './item.service';
 import { ver } from "../app.controller";
@@ -29,7 +29,7 @@ export class ItemController {
   }
 
   @Get('id/:id')
-  public async getItemById(id) {
+  public async getItemById(@Param('id') id) {
     return await this.itemService.getItemById(id);
   }
 }
