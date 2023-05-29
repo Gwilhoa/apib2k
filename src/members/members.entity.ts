@@ -13,6 +13,7 @@ import {
 } from 'typeorm';
 import { waifusMembers } from '../waifus-members/waifus-members.entity';
 import { MyItem } from '../item/myitem.entity';
+import { Role } from "../role/role.entity";
 
 @Entity()
 export class Members {
@@ -81,4 +82,17 @@ export class Members {
   @OneToMany(() => MyItem, (myItem) => myItem.member)
   @JoinColumn({ name: 'id', referencedColumnName: 'member_id' })
   items: MyItem[];
+
+  @ManyToMany(() => Role)
+  @JoinTable({
+    name: 'members_roles',
+    joinColumn: {
+      name: 'member',
+      referencedColumnName: 'id',
+    }, inverseJoinColumn: {
+      name: 'role',
+      referencedColumnName: 'id',
+    }
+  })
+  roles: Role[];
 }
