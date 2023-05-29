@@ -19,6 +19,7 @@ import { User } from '../authentification/auth.decorator';
 @Controller(ver + 'members')
 export class MembersController {
   private logger = new Logger('MembersController');
+
   constructor(private readonly membersService: MembersService) {}
 
   @Get()

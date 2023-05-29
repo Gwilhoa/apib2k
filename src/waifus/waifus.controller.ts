@@ -1,14 +1,14 @@
 import {
+  Body,
   Controller,
+  Get,
+  Headers,
+  Param,
   Post,
   Res,
-  Headers,
-  Body,
-  Get,
-  Param,
 } from '@nestjs/common';
 import { WaifusService } from './waifus.service';
-import { ver, token } from '../app.controller';
+import { token, ver } from '../app.controller';
 
 @Controller(ver + 'waifus')
 export class WaifusController {
@@ -45,6 +45,7 @@ export class WaifusController {
       .status(200)
       .json(await this.waifusService.getWaifuByName(name));
   }
+
   @Get('reset')
   async resetWaifus(@Res({ passthrough: true }) response, @Headers() head) {
     if (head['token'] != token) {

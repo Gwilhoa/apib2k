@@ -8,7 +8,6 @@ import { CreateMembersDTO } from '../dto/create-members.dto';
 import * as bcrypt from 'bcrypt';
 import { SquadsService } from '../squads/squads.service';
 import { waifusMembers } from '../waifus-members/waifus-members.entity';
-import { Waifu } from '../waifus/waifus.entity';
 import { Members } from './members.entity';
 import { CreateSquadDTO } from '../dto/create-squads.dto';
 import { channelAnnonce, client } from '../main';
@@ -36,6 +35,7 @@ export class MembersService {
       }
     }
   }
+
   public async createMember(createMembersDTO: CreateMembersDTO) {
     const member: Members = new Members();
     member.id = createMembersDTO.id;
@@ -72,6 +72,7 @@ export class MembersService {
       .where('members.id = :id', { id: id })
       .getOne();
   }
+
   public async removeMember(id) {
     const member = await this.membersRepository.findOneBy({
       id: id,

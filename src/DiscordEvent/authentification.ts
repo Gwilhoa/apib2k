@@ -1,8 +1,10 @@
 import { client } from '../main';
 import { ButtonStyle } from 'discord.js';
+
 const { ButtonBuilder, ActionRowBuilder } = require('discord.js');
 
 const onVerifiedButton = new Map<string, number>();
+
 export async function sendVerifiedButton(id: string, name: string) {
   const user = await client.users.fetch(id);
   if (user == null) {

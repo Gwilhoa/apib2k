@@ -16,7 +16,7 @@ import { ItemService } from '../item/item.service';
 import { WaifusService } from '../waifus/waifus.service';
 import { WaifusMembersService } from '../waifus-members/waifus-members.service';
 import { waifusMembers } from '../waifus-members/waifus-members.entity';
-import { MyItem } from "../item/myitem.entity";
+import { MyItem } from '../item/myitem.entity';
 
 @Module({
   providers: [

@@ -18,7 +18,7 @@ import { ItemService } from '../item/item.service';
 import { Item } from '../item/item.entity';
 import { waifusMembers } from '../waifus-members/waifus-members.entity';
 import { WaifusMembersService } from '../waifus-members/waifus-members.service';
-import { MyItem } from "../item/myitem.entity";
+import { MyItem } from '../item/myitem.entity';
 
 @Module({
   imports: [

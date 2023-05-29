@@ -7,11 +7,13 @@ import { Members } from '../members/members.entity';
 
 @Injectable()
 export class SquadsService {
+  private logger = new Logger('SquadsService');
+
   constructor(
     @InjectRepository(Squads) private squadsRepository: Repository<Squads>,
     @InjectRepository(Members) private membersRepository: Repository<Members>,
   ) {}
-  private logger = new Logger('SquadsService');
+
   public async updateSquad() {
     const squads = await this.squadsRepository.find();
     for (const squad of squads) {
@@ -25,6 +27,7 @@ export class SquadsService {
       await this.squadsRepository.save(squad);
     }
   }
+
   public async removeSquad(id) {
     const squad = await this.squadsRepository.findOneBy({ id: id });
     const defaultSquad = await this.squadsRepository.findOneBy({ id: '0' });

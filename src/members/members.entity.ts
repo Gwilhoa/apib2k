@@ -11,9 +11,7 @@ import {
   OneToMany,
   PrimaryColumn,
 } from 'typeorm';
-import { WaifusMembersController } from '../waifus-members/waifus-members.controller';
 import { waifusMembers } from '../waifus-members/waifus-members.entity';
-import { Item } from '../item/item.entity';
 import { MyItem } from '../item/myitem.entity';
 
 @Entity()

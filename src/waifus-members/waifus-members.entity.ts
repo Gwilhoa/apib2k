@@ -1,9 +1,12 @@
-import { randomUUID } from 'crypto';
-import { Entity, ManyToOne, OneToMany, OneToOne, Column } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { Waifu } from '../waifus/waifus.entity';
 import { Members } from '../members/members.entity';
-import { JoinColumn, PrimaryGeneratedColumn } from 'typeorm';
-import type { Relation } from 'typeorm';
 
 @Entity()
 export class waifusMembers {

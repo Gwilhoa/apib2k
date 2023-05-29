@@ -1,7 +1,15 @@
-import { Body, Controller, Get, Param, Post, Res, UseGuards } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
 import { JwtAuthGuard } from '../authentification/jwt.guard';
 import { ItemService } from './item.service';
-import { ver } from "../app.controller";
+import { ver } from '../app.controller';
 
 @UseGuards(JwtAuthGuard)
 @Controller(ver + 'item')
@@ -9,12 +17,12 @@ export class ItemController {
   constructor(readonly itemService: ItemService) {}
 
   @Get()
-  public async getItems(@Res() response){
+  public async getItems(@Res() response) {
     return response.status(200).send(await this.itemService.getItems());
   }
 
   @Post()
-  public async createItem(@Res() response, @Body() body){
+  public async createItem(@Res() response, @Body() body) {
     let ret;
     try {
       ret = await this.itemService.createItem(

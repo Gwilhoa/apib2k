@@ -3,7 +3,6 @@ import {
   Controller,
   Delete,
   Get,
-  Headers,
   Logger,
   Param,
   Patch,
@@ -13,19 +12,20 @@ import {
 } from '@nestjs/common';
 import { CreateSquadDTO } from '../dto/create-squads.dto';
 import { SquadsService } from './squads.service';
-import { ver, token } from '../app.controller';
+import { ver } from '../app.controller';
 import { JwtAuthGuard } from '../authentification/jwt.guard';
 import { User } from '../authentification/auth.decorator';
 
 @UseGuards(JwtAuthGuard)
 @Controller(ver + 'squads')
 export class SquadsController {
+  private logger = new Logger('SquadsController');
+
   constructor(private readonly squadService: SquadsService) {
     this.squadService.updateSquad();
     this.logger.log('Squad updated');
   }
 
-  private logger = new Logger('SquadsController');
   @Delete()
   public async deleteSquad(@Body() body, @Res() response) {
     const squad = await this.squadService.removeSquad(body.id);
@@ -53,6 +53,7 @@ export class SquadsController {
     }
     return response.status(200).send(squad);
   }
+
   @Get('id/:id')
   getSquadById(@Res() response, @Param('id') id) {
     const squad = this.squadService.getSquadById(id);

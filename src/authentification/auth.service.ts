@@ -11,10 +11,12 @@ import { MembersService } from '../members/members.service';
 @Injectable()
 export class AuthService {
   private readonly logger = new Logger(AuthService.name);
+
   constructor(
     private readonly jwtService: JwtService,
     private membersService: MembersService,
   ) {}
+
   public async createToken(username: string, duration: any, isAdmin: boolean) {
     const payload = {
       username: username,
@@ -25,6 +27,7 @@ export class AuthService {
       secret: process.env.ENCRYPTION_KEY,
     });
   }
+
   async login(username: string, password: string) {
     this.logger.log('login ' + username);
     if (

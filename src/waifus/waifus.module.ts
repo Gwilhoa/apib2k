@@ -4,7 +4,7 @@ import { WaifusController } from './waifus.controller';
 import { Waifu } from './waifus.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { WaifusMembersService } from '../waifus-members/waifus-members.service';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigService } from '@nestjs/config';
 import { waifusMembers } from '../waifus-members/waifus-members.entity';
 
 @Module({

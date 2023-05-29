@@ -29,6 +29,7 @@ import { Item } from './item/item.entity';
 import { ItemService } from './item/item.service';
 import { waifusMembers } from './waifus-members/waifus-members.entity';
 import { MyItem } from './item/myitem.entity';
+import { EventModule } from "./events/event.module";
 
 @Module({
   imports: [
@@ -50,6 +51,7 @@ import { MyItem } from './item/myitem.entity';
     TypeOrmModule.forFeature([waifusMembers]),
     TypeOrmModule.forFeature([MyItem]),
     ItemModule,
+    EventModule,
   ],
   controllers: [AppController, TitleController],
   providers: [

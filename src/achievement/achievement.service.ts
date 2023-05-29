@@ -10,6 +10,7 @@ export class AchievementService {
     @InjectRepository(Achievement)
     private AchievementRepository: Repository<Achievement>,
   ) {}
+
   public async getAchievements() {
     return await this.AchievementRepository.find();
   }
