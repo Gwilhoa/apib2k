@@ -1,8 +1,9 @@
 import { Body, Controller, Get, Post, Res, UseGuards } from '@nestjs/common';
 import { RoleService } from './role.service';
 import { JwtAuthGuard } from '../authentification/jwt.guard';
+import { ver } from "../app.controller";
 
-@Controller('role')
+@Controller(ver + 'role')
 @UseGuards(JwtAuthGuard)
 export class RoleController {
   constructor(private readonly roleService: RoleService) {}
