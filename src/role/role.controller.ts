@@ -14,7 +14,7 @@ export class RoleController {
         .status(201)
         .json(await this.roleService.createRoleCategory(body.name, body.color));
     } catch (e) {
-      return response.status(400).json({ message_code: e.message() });
+      return response.status(400).json({ message_code: e.message });
     }
   }
 
@@ -32,7 +32,7 @@ export class RoleController {
         .status(201)
         .json(await this.roleService.createRole(body.name, body.category));
     } catch (e) {
-      return response.status(400).json({ message_code: e.message() });
+      return response.status(400).json({ message_code: e.message });
     }
   }
 }

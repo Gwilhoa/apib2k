@@ -1,1 +1,12 @@
-GET https://api.bitume2000.fr/v2/role
+POST https://api.bitume2000.fr/v2/role/category
+Authorization: bearer {{token}}
+Accept: application/json
+
+{
+}
+
+###
+GET https://api.bitume2000.fr/v2/role/category
+Authorization: bearer {{token}}
+Accept: application/json
+
