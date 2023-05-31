@@ -392,8 +392,9 @@ export class MembersService {
     if (!role) throw new Error('Role not found');
     member.roles.push(role);
     const ret = await this.membersRepository.save(member);
+    console.log(ret);
     if (ret != null) {
-      addRoleToUser(member, role);
+      await addRoleToUser(member, role);
     }
   }
 }
