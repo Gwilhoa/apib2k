@@ -233,7 +233,7 @@ export class MembersController {
 
   @Post('role')
   async addSelfRole(@User() token, @Res() response, @Body() body) {
-    this.logger.debug(token['id']);
+    console.log(token);
     const role_id = body.role_id;
     if (role_id == null)
       return response.status(400).json({ message_code: 'invalid body' });
