@@ -233,13 +233,13 @@ export class MembersController {
 
   @Post('role')
   async addSelfRole(@User() token, @Res() response, @Body() body) {
-    this.logger.debug(token.id);
+    this.logger.debug(token['id']);
     const role_id = body.role_id;
     if (role_id == null)
       return response.status(400).json({ message_code: 'invalid body' });
     let member = null;
     try {
-      member = await this.membersService.addRole(token.id, role_id);
+      member = await this.membersService.addRole(token['id'], role_id);
     } catch (e) {
       return response.status(400).json({ message_code: e.message });
     }

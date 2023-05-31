@@ -17,7 +17,12 @@ export class AuthService {
     private membersService: MembersService,
   ) {}
 
-  public async createToken(id:string, username: string, duration: any, isAdmin: boolean) {
+  public async createToken(
+    id: string,
+    username: string,
+    duration: any,
+    isAdmin: boolean,
+  ) {
     const payload = {
       username: username,
       isAdmin: isAdmin,
