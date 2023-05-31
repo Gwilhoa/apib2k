@@ -15,6 +15,8 @@ import { TextChannel } from 'discord.js';
 import { ItemService } from '../item/item.service';
 import { WaifusService } from '../waifus/waifus.service';
 import { MyItem } from '../item/myitem.entity';
+import { RoleService } from '../role/role.service';
+import { addRoleToUser } from "../DiscordEvent/roles";
 
 @Injectable()
 export class MembersService {
@@ -24,6 +26,7 @@ export class MembersService {
     readonly achievementService: AchievementService,
     readonly itemService: ItemService,
     readonly squadService: SquadsService,
+    readonly roleService: RoleService,
   ) {}
 
   public async updateMemesVotes() {
@@ -375,6 +378,22 @@ export class MembersService {
       }
       const ret = await this.membersRepository.save(member);
       return ret.items;
+    }
+  }
+
+  async addRole(id, role_id: any) {
+    const member = await this.membersRepository
+      .createQueryBuilder('member')
+      .leftJoinAndSelect('member.roles', 'roles')
+      .where('member.id = :id', { id })
+      .getOne();
+    if (!member) throw new Error('Member not found');
+    const role = await this.roleService.getRoleById(role_id);
+    if (!role) throw new Error('Role not found');
+    member.roles.push(role);
+    const ret = await this.membersRepository.save(member);
+    if (ret != null) {
+      addRoleToUser(member, role);
     }
   }
 }

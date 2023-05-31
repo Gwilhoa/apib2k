@@ -230,4 +230,32 @@ export class MembersController {
     }
     return response.status(200).json(inventory);
   }
+
+  @Post('role')
+  async addSelfRole(@User('sub') id, @Res() response, @Body() body) {
+    const role_id = body.role_id;
+    if (role_id == null)
+      return response.status(400).json({ message_code: 'invalid body' });
+    let member = null;
+    try {
+      member = await this.membersService.addRole(id, role_id);
+    } catch (e) {
+      return response.status(400).json({ message_code: e.message });
+    }
+    return response.status(200).json(member);
+  }
+
+  @Post('role/:id')
+  async addRole(@Param('id') id, @Res() response, @Body() body) {
+    const role_id = body.role_id;
+    if (role_id == null)
+      return response.status(400).json({ message_code: 'invalid body' });
+    let member = null;
+    try {
+      member = await this.membersService.addRole(id, role_id);
+    } catch (e) {
+      return response.status(400).json({ message_code: e.message });
+    }
+    return response.status(200).json(member);
+  }
 }
