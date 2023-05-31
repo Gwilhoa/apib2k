@@ -16,7 +16,7 @@ import { ItemService } from '../item/item.service';
 import { WaifusService } from '../waifus/waifus.service';
 import { MyItem } from '../item/myitem.entity';
 import { RoleService } from '../role/role.service';
-import { addRoleToUser } from "../DiscordEvent/roles";
+import { addRoleToUser, removeRoleFromUser } from "../DiscordEvent/roles";
 
 @Injectable()
 export class MembersService {
@@ -390,11 +390,31 @@ export class MembersService {
     if (!member) throw new Error('Member not found');
     const role = await this.roleService.getRoleById(role_id);
     if (!role) throw new Error('Role not found');
+    if (member.roles.includes(role)) throw new Error('Role already added');
     member.roles.push(role);
     const ret = await this.membersRepository.save(member);
     console.log(ret);
     if (ret != null) {
       await addRoleToUser(member, role);
+    }
+  }
+
+  async removeRole(id, role_id: any)
+  {
+    const member = await this.membersRepository
+      .createQueryBuilder('member')
+      .leftJoinAndSelect('member.roles', 'roles')
+      .where('member.id = :id', { id })
+      .getOne();
+    if (!member) throw new Error('Member not found');
+    const role = await this.roleService.getRoleById(role_id);
+    if (!role) throw new Error('Role not found');
+    if (!member.roles.includes(role)) throw new Error('Role not attributed');
+    member.roles.splice(member.roles.indexOf(role), 1);
+    const ret = await this.membersRepository.save(member);
+    console.log(ret);
+    if (ret != null) {
+      await removeRoleFromUser(member, role);
     }
   }
 }

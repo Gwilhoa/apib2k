@@ -29,8 +29,8 @@ export class MembersController {
   }
 
   @Get('/id')
-  async getDefaultMember(@User() token, @Res() res) {
-    const member = await this.membersService.getMemberById(token.id);
+  async getDefaultMember(@User() user, @Res() res) {
+    const member = await this.membersService.getMemberById(user.id);
     if (member == null) {
       return res.status(204).json({ message_code: 'user not found' });
     }
@@ -254,6 +254,20 @@ export class MembersController {
     let member = null;
     try {
       member = await this.membersService.addRole(id, role_id);
+    } catch (e) {
+      return response.status(400).json({ message_code: e.message });
+    }
+    return response.status(200).json(member);
+  }
+
+  @Delete('role')
+  async removeRole(@Res() response, @Body() body, @User() user) {
+    const role_id = body.role_id;
+    if (role_id == null)
+      return response.status(400).json({ message_code: 'invalid body' });
+    let member = null;
+    try {
+      member = await this.membersService.removeRole(user.id, role_id);
     } catch (e) {
       return response.status(400).json({ message_code: e.message });
     }
