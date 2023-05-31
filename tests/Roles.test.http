@@ -1,12 +1,29 @@
 POST https://api.bitume2000.fr/v2/role/category
 Authorization: bearer {{token}}
-Accept: application/json
+accept: application/json
+content-type: application/json
 
 {
+  "name": "Position",
+  "color" : "274E13"
 }
+
+
 
 ###
 GET https://api.bitume2000.fr/v2/role/category
 Authorization: bearer {{token}}
 Accept: application/json
 
+###
+
+POST https://api.bitume2000.fr/v2/role
+Authorization: bearer {{token}}
+accept: application/json
+content-type: application/json
+
+{
+  "name": "Grésivaudan",
+  "category": 1
+
+}

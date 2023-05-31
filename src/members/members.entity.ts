@@ -13,7 +13,7 @@ import {
 } from 'typeorm';
 import { waifusMembers } from '../waifus-members/waifus-members.entity';
 import { MyItem } from '../item/myitem.entity';
-import { Role } from "../role/role.entity";
+import { Role } from '../role/role.entity';
 
 @Entity()
 export class Members {
@@ -89,10 +89,11 @@ export class Members {
     joinColumn: {
       name: 'member',
       referencedColumnName: 'id',
-    }, inverseJoinColumn: {
+    },
+    inverseJoinColumn: {
       name: 'role',
       referencedColumnName: 'id',
-    }
+    },
   })
   roles: Role[];
 }

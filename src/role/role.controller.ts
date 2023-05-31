@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Post, Res, UseGuards } from '@nestjs/common';
 import { RoleService } from './role.service';
 import { JwtAuthGuard } from '../authentification/jwt.guard';
-import { ver } from "../app.controller";
+import { ver } from '../app.controller';
 
 @Controller(ver + 'role')
 @UseGuards(JwtAuthGuard)
@@ -25,7 +25,7 @@ export class RoleController {
       .json(await this.roleService.getRoleCategories());
   }
 
-  @Post('/role')
+  @Post()
   async createRole(@Res() response, @Body() body) {
     try {
       return response

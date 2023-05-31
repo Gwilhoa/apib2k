@@ -17,6 +17,9 @@ import { WaifusService } from '../waifus/waifus.service';
 import { WaifusMembersService } from '../waifus-members/waifus-members.service';
 import { waifusMembers } from '../waifus-members/waifus-members.entity';
 import { MyItem } from '../item/myitem.entity';
+import { Role } from '../role/role.entity';
+import { RoleCategorie } from '../role/rolecategory.entity';
+import { RoleService } from '../role/role.service';
 
 @Module({
   providers: [
@@ -28,6 +31,7 @@ import { MyItem } from '../item/myitem.entity';
     ItemService,
     WaifusService,
     WaifusMembersService,
+    RoleService,
   ],
   controllers: [MembersController],
   imports: [
@@ -38,6 +42,8 @@ import { MyItem } from '../item/myitem.entity';
     TypeOrmModule.forFeature([Item]),
     TypeOrmModule.forFeature([waifusMembers]),
     TypeOrmModule.forFeature([MyItem]),
+    TypeOrmModule.forFeature([Role]),
+    TypeOrmModule.forFeature([RoleCategorie]),
     AuthModule,
     ConfigModule,
   ],
