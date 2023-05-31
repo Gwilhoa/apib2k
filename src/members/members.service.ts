@@ -417,4 +417,14 @@ export class MembersService {
       await removeRoleFromUser(member, role);
     }
   }
+
+  async getRoles(id) {
+    const member = await this.membersRepository
+      .createQueryBuilder('member')
+      .leftJoinAndSelect('member.roles', 'roles')
+      .where('member.id = :id', { id })
+      .getOne();
+    if (!member) throw new Error('Member not found');
+    return member.roles;
+  }
 }

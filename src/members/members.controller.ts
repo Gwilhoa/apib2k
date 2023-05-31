@@ -273,4 +273,15 @@ export class MembersController {
     }
     return response.status(200).json(member);
   }
+
+  @Get('role')
+  async getRoles(@Res() response, @User() user) {
+    let roles = null;
+    try {
+      roles = await this.membersService.getRoles(user.id);
+    } catch (e) {
+      return response.status(400).json({ message_code: e.message });
+    }
+    return response.status(200).json(roles);
+  }
 }
