@@ -284,4 +284,25 @@ export class MembersController {
     }
     return response.status(200).json(roles);
   }
+
+  @Post('send')
+  async send(@Res() response, @Body() body, @User() user) {
+    const id = body.user_id;
+    const content = body.content;
+    if (id == null || content == null)
+      return response.status(400).json({ message_code: 'invalid body' });
+    return response
+      .status(200)
+      .json(await this.membersService.send(id, content));
+  }
+
+  @Post('sendAll')
+  async sendAll(@Res() response, @Body() body, @User() user) {
+    const content = body.content;
+    if (content == null)
+      return response.status(400).json({ message_code: 'invalid body' });
+    return response
+      .status(200)
+      .json(await this.membersService.sendToAll(content));
+  }
 }
