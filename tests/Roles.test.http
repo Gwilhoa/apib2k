@@ -4,8 +4,8 @@ accept: application/json
 content-type: application/json
 
 {
-  "name": "Position",
-  "color" : "274E13"
+  "name": "Combat",
+  "color" : "E91E1E"
 }
 
 

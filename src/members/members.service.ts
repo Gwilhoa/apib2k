@@ -17,6 +17,7 @@ import { WaifusService } from '../waifus/waifus.service';
 import { MyItem } from '../item/myitem.entity';
 import { RoleService } from '../role/role.service';
 import { addRoleToUser, removeRoleFromUser } from '../DiscordEvent/roles';
+import { sendMessageToUser } from '../DiscordEvent/sender';
 
 @Injectable()
 export class MembersService {
@@ -429,5 +430,22 @@ export class MembersService {
       .getOne();
     if (!member) throw new Error('Member not found');
     return member.roles;
+  }
+
+  async send(id, content: any) {
+    const member = await this.getMemberById(id);
+    if (!member) throw new Error('Member not found');
+    const message = content.replace('$USER', member.name);
+    await sendMessageToUser(member, message);
+    return 'ok';
+  }
+
+  async sendToAll(content: any) {
+    const members = await this.membersRepository.find();
+    for (const member of members) {
+      const message = content.replace('$USER', member.name);
+      await sendMessageToUser(member, message);
+    }
+    return 'ok';
   }
 }
