@@ -14,7 +14,7 @@ dotenv.config();
       password: process.env.DB_PWD,
       database: process.env.DB_NAME,
       entities: [__dirname + '/../**/*.entity.js'],
-      synchronize: true,
+      synchronize: false,
       //logging: true,
     }),
   ],
