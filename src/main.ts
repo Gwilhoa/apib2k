@@ -34,6 +34,8 @@ const client = new Client({
     'GuildMessageReactions',
     'DirectMessages',
     'DirectMessageReactions',
+    'GuildMessages',
+    'GuildMessageTyping',
   ],
 });
 client.login(process.env.DISCORD_TOKEN);
