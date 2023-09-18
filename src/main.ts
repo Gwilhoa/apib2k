@@ -20,7 +20,7 @@ async function bootstrap() {
     interactionsHandler.handleButtonInteraction(interaction); // Utilisez la méthode handleButtonInteraction de DiscordInteractionsHandler
   });
   app.use(cors(corsOptions));
-  await app.listen(5001);
+  await app.listen(5000);
 }
 
 export function sleep(ms: number) {
