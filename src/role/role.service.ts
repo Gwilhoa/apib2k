@@ -30,7 +30,11 @@ export class RoleService {
         const args: string[] = interaction.customId.split(';');
         const categoryid = args[1];
         const name = args[2];
-        await this.createRole(name, categoryid);
+        try {
+          await this.createRole(name, categoryid);
+        } catch (e) {
+          return;
+        }
         interaction.message.delete();
       }
     });
@@ -67,7 +71,8 @@ export class RoleService {
   async createRole(name, category_id) {
     if (name == null || category_id == null)
       throw new Error('Missing parameters');
-    for (const role of await this.roleRepository.find()) {
+    const roles = await await this.roleRepository.find();
+    for (const role of roles) {
       if (role.name == name) throw new Error('Role already exists');
     }
     const category = await this.getRoleCategoryById(category_id);
