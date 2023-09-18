@@ -4,9 +4,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Role } from './role.entity';
 import { isHexadecimal } from 'class-validator';
-import { announceRole, roles, sendRoleRequest } from "../DiscordEvent/roles";
-import { client } from "../main";
-import { setVerified } from "../DiscordEvent/authentification";
+import { announceRole, roles, sendRoleRequest } from '../DiscordEvent/roles';
+import { client } from '../main';
+import { setVerified } from '../DiscordEvent/authentification';
 
 @Injectable()
 export class RoleService {
