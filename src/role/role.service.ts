@@ -71,8 +71,8 @@ export class RoleService {
   async createRole(name, category_id) {
     if (name == null || category_id == null)
       throw new Error('Missing parameters');
-    const roles = await await this.roleRepository.find();
-    for (const role of roles) {
+    const Lroles = await await this.roleRepository.find();
+    for (const role of Lroles) {
       if (role.name == name) throw new Error('Role already exists');
     }
     const category = await this.getRoleCategoryById(category_id);
