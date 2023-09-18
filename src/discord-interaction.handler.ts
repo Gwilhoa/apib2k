@@ -1,8 +1,6 @@
-// discord-interactions.handler.ts
-
-import { Injectable } from '@nestjs/common';
+import { setVerified } from './DiscordEvent/authentification';
 import { RoleService } from './role/role.service';
-import { setVerified } from './DiscordEvent/authentification'; // Assurez-vous d'importer RoleService
+import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class DiscordInteractionsHandler {
@@ -13,18 +11,26 @@ export class DiscordInteractionsHandler {
       interaction.isButton() &&
       interaction.customId === 'approve-connection'
     ) {
-      interaction.channel.send('La connexion a été approuvée !');
-      interaction.message.delete();
-      setVerified(interaction.user.id);
+      if (!interaction.customData?.messageSent) {
+        // Vérifiez si le message a déjà été envoyé
+        interaction.channel.send('La connexion a été approuvée !');
+        interaction.customData = { messageSent: true }; // Marquez que le message a été envoyé
+        interaction.message.delete();
+        setVerified(interaction.user.id);
+      }
     } else if (
       interaction.isButton() &&
       interaction.customId.startsWith('add_role')
     ) {
-      const args: string[] = interaction.customId.split(';');
-      const categoryid = args[1];
-      const name = args[2];
+      if (!interaction.customData?.roleCreated) {
+        // Vérifiez si le rôle a déjà été créé
+        const args: string[] = interaction.customId.split(';');
+        const categoryid = args[1];
+        const name = args[2];
 
-      this.roleService.createRole(name, categoryid);
+        this.roleService.createRole(name, categoryid);
+        interaction.customData = { roleCreated: true }; // Marquez que le rôle a été créé
+      }
     }
   }
 }
