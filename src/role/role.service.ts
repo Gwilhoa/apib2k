@@ -31,6 +31,7 @@ export class RoleService {
         const categoryid = args[1];
         const name = args[2];
         await this.createRole(name, categoryid);
+        interaction.message.delete();
       }
     });
   }
