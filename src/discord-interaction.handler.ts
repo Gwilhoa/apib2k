@@ -4,33 +4,30 @@ import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class DiscordInteractionsHandler {
+  private interactionsHandled: Set<string> = new Set<string>(); // Utilisez un ensemble pour stocker les interactions traitées
+
   constructor(private readonly roleService: RoleService) {}
 
   handleButtonInteraction(interaction: any) {
+    const interactionKey = `${interaction.user.id}:${interaction.customId}`;
+
     if (
       interaction.isButton() &&
-      interaction.customId === 'approve-connection'
+      !this.interactionsHandled.has(interactionKey)
     ) {
-      if (!interaction.customData?.messageSent) {
-        // Vérifiez si le message a déjà été envoyé
+      if (interaction.customId === 'approve-connection') {
         interaction.channel.send('La connexion a été approuvée !');
-        interaction.customData = { messageSent: true }; // Marquez que le message a été envoyé
         interaction.message.delete();
         setVerified(interaction.user.id);
-      }
-    } else if (
-      interaction.isButton() &&
-      interaction.customId.startsWith('add_role')
-    ) {
-      if (!interaction.customData?.roleCreated) {
-        // Vérifiez si le rôle a déjà été créé
+      } else if (interaction.customId.startsWith('add_role')) {
         const args: string[] = interaction.customId.split(';');
         const categoryid = args[1];
         const name = args[2];
 
         this.roleService.createRole(name, categoryid);
-        interaction.customData = { roleCreated: true }; // Marquez que le rôle a été créé
       }
+
+      this.interactionsHandled.add(interactionKey); // Marquez l'interaction comme traitée
     }
   }
 }
