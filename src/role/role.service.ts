@@ -14,26 +14,7 @@ export class RoleService {
     @InjectRepository(RoleCategorie)
     private roleCategorieRepository: Repository<RoleCategorie>,
     @InjectRepository(Role) private roleRepository: Repository<Role>,
-  ) {
-    client.on('interactionCreate', async (interaction) => {
-      if (
-        interaction.isButton() &&
-        interaction.customId === 'approve-connection'
-      ) {
-        await interaction.channel.send('La connexion a été approuvée !');
-        await interaction.message.delete();
-        await setVerified(interaction.user.id);
-      } else if (
-        interaction.isButton() &&
-        interaction.customId.startsWith('add_role')
-      ) {
-        const args: string[] = interaction.customId.split(';');
-        const categoryid = args[1];
-        const name = args[2];
-        await this.createRole(name, categoryid);
-      }
-    });
-  }
+  ) {}
   async createRoleCategory(name: string, color: string) {
     if (name == null || color == null) throw new Error('Missing parameters');
     if (!isHexadecimal(color)) throw new Error('Color is not hexadecimal');
