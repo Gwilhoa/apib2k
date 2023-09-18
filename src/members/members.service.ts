@@ -10,7 +10,7 @@ import { SquadsService } from '../squads/squads.service';
 import { waifusMembers } from '../waifus-members/waifus-members.entity';
 import { Members } from './members.entity';
 import { CreateSquadDTO } from '../dto/create-squads.dto';
-import { channelAnnonce, client } from '../main';
+import { client } from '../main';
 import { TextChannel } from 'discord.js';
 import { ItemService } from '../item/item.service';
 import { WaifusService } from '../waifus/waifus.service';
@@ -108,7 +108,9 @@ export class MembersService {
     }
     member.achievements.push(achievement);
     await this.membersRepository.save(member);
-    const channel = client.channels.cache.get(channelAnnonce) as TextChannel;
+    const channel = client.channels.cache.get(
+      '1009895934999670885',
+    ) as TextChannel;
     if (channel != null) {
       await channel.send(
         `<@${id}> a obtenu le succès **${achievement.name}** !`,
