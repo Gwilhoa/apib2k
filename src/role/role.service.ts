@@ -10,34 +10,50 @@ import { setVerified } from '../DiscordEvent/authentification';
 
 @Injectable()
 export class RoleService {
+  private eventListenerAdded = false; // Variable de contrôle pour suivre l'état de l'événement
+  private eventCooldown = false; // Variable de contrôle pour gérer le cooldown
+
   constructor(
     @InjectRepository(RoleCategorie)
     private roleCategorieRepository: Repository<RoleCategorie>,
     @InjectRepository(Role) private roleRepository: Repository<Role>,
   ) {
-    client.on('interactionCreate', async (interaction) => {
-      if (
-        interaction.isButton() &&
-        interaction.customId === 'approve-connection'
-      ) {
-        await interaction.channel.send('La connexion a été approuvée !');
-        await interaction.message.delete();
-        await setVerified(interaction.user.id);
-      } else if (
-        interaction.isButton() &&
-        interaction.customId.startsWith('add_role')
-      ) {
-        const args: string[] = interaction.customId.split(';');
-        const categoryid = args[1];
-        const name = args[2];
-        try {
-          await this.createRole(name, categoryid);
-        } catch (e) {
-          return;
+    // Ajoutez un gestionnaire d'événement pour l'interaction uniquement si ce n'est pas déjà fait
+    if (!this.eventListenerAdded) {
+      client.on('interactionCreate', async (interaction) => {
+        if (
+          interaction.isButton() &&
+          interaction.customId === 'approve-connection'
+        ) {
+          if (!this.eventCooldown) {
+            await interaction.channel.send('La connexion a été approuvée !');
+            await interaction.message.delete();
+            await setVerified(interaction.user.id);
+
+            // Activer le cooldown
+            this.eventCooldown = true;
+            setTimeout(() => {
+              this.eventCooldown = false; // Réactivez l'écoute après 5 secondes
+            }, 5000); // 5000 millisecondes = 5 secondes
+          }
+        } else if (
+          interaction.isButton() &&
+          interaction.customId.startsWith('add_role')
+        ) {
+          const args: string[] = interaction.customId.split(';');
+          const categoryid = args[1];
+          const name = args[2];
+          try {
+            await this.createRole(name, categoryid);
+          } catch (e) {
+            return;
+          }
+          interaction.message.delete();
         }
-        interaction.message.delete();
-      }
-    });
+      });
+
+      this.eventListenerAdded = true; // Marquer l'événement comme ajouté
+    }
   }
   async createRoleCategory(name: string, color: string) {
     if (name == null || color == null) throw new Error('Missing parameters');
