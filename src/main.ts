@@ -1,21 +1,26 @@
+// main.ts
+
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { Client } from 'discord.js';
-import { setVerified } from './DiscordEvent/authentification';
-import { ver } from './app.controller';
 import { Logger } from '@nestjs/common';
-import { RoleService } from './role/role.service';
+import { DiscordInteractionsHandler } from './discord-interaction.handler';
 
-export const channelAnnonce = '1009895934999670885';
-let app;
+const channelAnnonce = '1009895934999670885';
+
 async function bootstrap() {
-  app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule);
   const corsOptions = {
     origin: '*',
   };
 
   const cors = require('cors');
-
+  const interactionsHandler = app
+    .select(AppModule)
+    .get(DiscordInteractionsHandler); // Injectez la classe DiscordInteractionsHandler
+  client.on('interactionCreate', async (interaction) => {
+    interactionsHandler.handleButtonInteraction(interaction); // Utilisez la méthode handleButtonInteraction de DiscordInteractionsHandler
+  });
   app.use(cors(corsOptions));
   await app.listen(5000);
 }
@@ -28,7 +33,7 @@ export function sleep(ms: number) {
 
 const dotenv = require('dotenv');
 dotenv.config();
-const client = new Client({
+export const client = new Client({
   intents: [
     'Guilds',
     'GuildMessages',
@@ -41,9 +46,7 @@ const client = new Client({
 });
 client.login(process.env.DISCORD_TOKEN);
 
-export { client };
 const logger = new Logger('APIB2K');
 
-logger.log('version ' + ver);
 logger.log('developed by gchatain');
 bootstrap();
