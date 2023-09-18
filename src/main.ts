@@ -6,8 +6,6 @@ import { Client } from 'discord.js';
 import { Logger } from '@nestjs/common';
 import { DiscordInteractionsHandler } from './discord-interaction.handler';
 
-const channelAnnonce = '1009895934999670885';
-
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const corsOptions = {
