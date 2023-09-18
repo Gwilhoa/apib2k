@@ -19,27 +19,27 @@ export class RoleService {
     @InjectRepository(Role) private roleRepository: Repository<Role>,
   ) {
     // Ajoutez un gestionnaire d'événement pour l'interaction uniquement si ce n'est pas déjà fait
-    if (!this.eventListenerAdded) {
-      client.on('interactionCreate', async (interaction) => {
-        if (
-          interaction.isButton() &&
-          interaction.customId === 'approve-connection'
-        ) {
-          if (!this.eventCooldown) {
-            await interaction.channel.send('La connexion a été approuvée !');
-            await interaction.message.delete();
-            await setVerified(interaction.user.id);
+    client.on('interactionCreate', async (interaction) => {
+      if (
+        interaction.isButton() &&
+        interaction.customId === 'approve-connection'
+      ) {
+        if (!this.eventCooldown) {
+          await interaction.channel.send('La connexion a été approuvée !');
+          await interaction.message.delete();
+          await setVerified(interaction.user.id);
 
-            // Activer le cooldown
-            this.eventCooldown = true;
-            setTimeout(() => {
-              this.eventCooldown = false; // Réactivez l'écoute après 5 secondes
-            }, 5000); // 5000 millisecondes = 5 secondes
-          }
-        } else if (
-          interaction.isButton() &&
-          interaction.customId.startsWith('add_role')
-        ) {
+          // Activer le cooldown
+          this.eventCooldown = true;
+          setTimeout(() => {
+            this.eventCooldown = false; // Réactivez l'écoute après 5 secondes
+          }, 5000); // 5000 millisecondes = 5 secondes
+        }
+      } else if (
+        interaction.isButton() &&
+        interaction.customId.startsWith('add_role')
+      ) {
+        if (!this.eventCooldown) {
           const args: string[] = interaction.customId.split(';');
           const categoryid = args[1];
           const name = args[2];
@@ -49,11 +49,15 @@ export class RoleService {
             return;
           }
           interaction.message.delete();
-        }
-      });
 
-      this.eventListenerAdded = true; // Marquer l'événement comme ajouté
-    }
+          // Activer le cooldown
+          this.eventCooldown = true;
+          setTimeout(() => {
+            this.eventCooldown = false; // Réactivez l'écoute après 5 secondes
+          }, 5000); // 5000 millisecondes = 5 secondes
+        }
+      }
+    });
   }
   async createRoleCategory(name: string, color: string) {
     if (name == null || color == null) throw new Error('Missing parameters');

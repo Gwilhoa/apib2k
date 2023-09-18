@@ -57,7 +57,8 @@ export async function sendRoleRequest(
 }
 
 export async function announceRole(name, categroy) {
-  const guild = await client.guilds.cache.get('382938797442334720');
+  //const guild = await client.guilds.cache.get('382938797442334720');
+  const guild = await client.guilds.cache.get('1007743745959141407');
   const channel = await guild.channels.cache.get('947564791759777792');
 
   if (!channel || !(channel instanceof TextChannel)) {
