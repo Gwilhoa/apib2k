@@ -31,9 +31,10 @@ import { waifusMembers } from './waifus-members/waifus-members.entity';
 import { MyItem } from './item/myitem.entity';
 import { EventModule } from './events/event.module';
 import { RoleModule } from './role/role.module';
-import { RoleService } from "./role/role.service";
-import { Role } from "./role/role.entity";
-import { RoleCategorie } from "./role/rolecategory.entity";
+import { RoleService } from './role/role.service';
+import { Role } from './role/role.entity';
+import { RoleCategorie } from './role/rolecategory.entity';
+import { DiscordInteractionsHandler } from './discord-interaction.handler';
 
 @Module({
   imports: [
@@ -73,6 +74,7 @@ import { RoleCategorie } from "./role/rolecategory.entity";
     WaifusService,
     WaifusMembersService,
     ItemService,
+    DiscordInteractionsHandler,
   ],
 })
 export class AppModule {}
