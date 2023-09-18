@@ -4,11 +4,12 @@ import { Client } from 'discord.js';
 import { setVerified } from './DiscordEvent/authentification';
 import { ver } from './app.controller';
 import { Logger } from '@nestjs/common';
+import { RoleService } from './role/role.service';
 
 export const channelAnnonce = '1009895934999670885';
-
+let app;
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  app = await NestFactory.create(AppModule);
   const corsOptions = {
     origin: '*',
   };
@@ -44,8 +45,17 @@ client.on('interactionCreate', async (interaction) => {
     await interaction.channel.send('La connexion a été approuvée !');
     await interaction.message.delete();
     await setVerified(interaction.user.id);
+  } else if (
+    interaction.isButton() &&
+    interaction.customId.startsWith('add_role')
+  ) {
+    const args: string[] = interaction.customId.split(';');
+    const categoryid = args[1];
+    const name = args[2];
+    app.get(RoleService).createRole(name, categoryid);
   }
 });
+
 export { client };
 const logger = new Logger('APIB2K');
 

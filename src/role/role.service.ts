@@ -4,7 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Role } from './role.entity';
 import { isHexadecimal } from 'class-validator';
-import { roles, sendRoleRequest } from "../DiscordEvent/roles";
+import { announceRole, roles, sendRoleRequest } from "../DiscordEvent/roles";
 
 @Injectable()
 export class RoleService {
@@ -55,6 +55,7 @@ export class RoleService {
     role.name = name;
     role.parent = category;
     role.id = roleD.id;
+    await announceRole(role.name, category.name);
     return await this.roleRepository.save(role);
   }
 
@@ -66,7 +67,7 @@ export class RoleService {
     }
     const category = await this.getRoleCategoryById(category_id);
     if (category == null) throw new Error('Category does not exist');
-    await sendRoleRequest(username, name, category.name);
+    await sendRoleRequest(username, name, category.name, category.id);
   }
 
   async getRoleById(id) {
