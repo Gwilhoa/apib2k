@@ -3,3 +3,12 @@ Authorization: bearer {{token}}
 Accept: application/json
 
 ###
+
+POST https://api.bitume2000.fr/v2/members/achievements/341517026801614851
+Authorization: bearer {{token}}
+Accept: application/json
+content-type: application/json
+
+{
+"achievement_id": 2
+}

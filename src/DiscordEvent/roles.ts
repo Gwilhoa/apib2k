@@ -64,5 +64,5 @@ export async function announceRole(name, categroy) {
     return false;
   }
 
-  await channel.send('@everyone le role ' + name + ' est disponible');
+  await channel.send('Le role ' + name + ' est désormais disponible');
 }
