@@ -305,4 +305,10 @@ export class MembersController {
       .status(200)
       .json(await this.membersService.sendToAll(content));
   }
+
+  @Get('avatar')
+  async setAvatar(@Res() response) {
+    await this.membersService.setAvatar();
+    return response.status(200).json({ message_code: 'ok' });
+  }
 }

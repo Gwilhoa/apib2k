@@ -20,6 +20,9 @@ export class Members {
   @PrimaryColumn({ nullable: false, length: 36 })
   id: string;
 
+  @Column({ nullable: true, length: 100 })
+  avatar: string;
+
   @Column({ nullable: false, length: 100 })
   name: string;
 

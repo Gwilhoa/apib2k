@@ -17,7 +17,7 @@ import { WaifusService } from '../waifus/waifus.service';
 import { MyItem } from '../item/myitem.entity';
 import { RoleService } from '../role/role.service';
 import { addRoleToUser, removeRoleFromUser } from '../DiscordEvent/roles';
-import { sendMessageToUser } from '../DiscordEvent/sender';
+import { getAvatarUrl, sendMessageToUser } from '../DiscordEvent/sender';
 
 @Injectable()
 export class MembersService {
@@ -449,5 +449,16 @@ export class MembersService {
       await sendMessageToUser(member, message);
     }
     return 'ok';
+  }
+
+  async setAvatar() {
+    const members = await this.membersRepository.find();
+    for (const member of members) {
+      const avatar = await getAvatarUrl(member);
+      if (avatar != null) {
+        member.avatar = avatar;
+        await this.membersRepository.save(member);
+      }
+    }
   }
 }
