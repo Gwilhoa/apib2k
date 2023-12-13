@@ -16,7 +16,6 @@ import { ver } from '../app.controller';
 import { JwtAuthGuard } from '../authentification/jwt.guard';
 import { User } from '../authentification/auth.decorator';
 
-@UseGuards(JwtAuthGuard)
 @Controller(ver + 'squads')
 export class SquadsController {
   private logger = new Logger('SquadsController');
@@ -26,6 +25,7 @@ export class SquadsController {
     this.logger.log('Squad updated');
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete()
   public async deleteSquad(@Body() body, @Res() response) {
     const squad = await this.squadService.removeSquad(body.id);
@@ -40,6 +40,7 @@ export class SquadsController {
     return response.status(200).send(await this.squadService.getSquads());
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post()
   public async createSquad(
     @Body() createSquadRequest: CreateSquadDTO,
@@ -62,11 +63,13 @@ export class SquadsController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get('id')
   getSquadByToken(@Res() response, @User() user) {
     response.status(200).json(this.squadService.getSquadsByToken(user));
   }
 
+  @UseGuards(JwtAuthGuard)
   @Patch('id/:id')
   addManualPoints(@Res() response, @Param('id') id, @Body() body) {
     const points = this.squadService.addManualPoints(id, body.points);
